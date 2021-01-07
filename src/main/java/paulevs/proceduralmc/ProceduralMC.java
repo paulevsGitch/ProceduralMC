@@ -66,6 +66,7 @@ public class ProceduralMC implements ModInitializer {
 			Set<String> names = Sets.newHashSet();
 			for (int i = 0; i < 10; i++) {
 				String name = MarkovNameGen.makeOreName(random, names);
+				names.add(name);
 				Identifier id = makeID(name.toLowerCase());
 				String orename = id.getNamespace() + "." + id.getPath();
 				MarkovNameGen.addTranslation("block." + orename, name);
