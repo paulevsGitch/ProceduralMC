@@ -23,6 +23,14 @@ public class InnerRegistry {
 	private static final Map<Identifier, Block> BLOCKS = Maps.newHashMap();
 	private static final Set<Identifier> MODELED = Sets.newHashSet();
 	
+	public static void clearRegistries() {
+		BLOCK_MODELS.clear();
+		ITEM_MODELS.clear();
+		TEXTURES.clear();
+		BLOCKS.clear();
+		MODELED.clear();
+	}
+	
 	public static void registerBlock(Identifier id, Block block) {
 		BLOCKS.put(id, block);
 	}

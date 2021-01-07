@@ -33,6 +33,8 @@ public class SimpleRegistryMixin<T> implements ChangeableRegistry {
 	@Final
 	@Shadow
 	private Map<T, Lifecycle> entryToLifecycle;
+	@Shadow
+	private int nextId;
 
 	@Override
 	public void remove(Identifier key) {
@@ -45,5 +47,14 @@ public class SimpleRegistryMixin<T> implements ChangeableRegistry {
 			keyToEntry.inverse().remove(entry);
 			entryToLifecycle.remove(entry);
 		}
+	}
+
+	@Override
+	public void recalculateLastID() {
+		nextId = 0;
+		for (int id: entryToRawId.values()) {
+			nextId = id > nextId ? id : nextId;
+		}
+		nextId ++;
 	}
 }

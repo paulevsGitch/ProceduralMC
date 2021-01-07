@@ -67,7 +67,9 @@ public class ProceduralMC implements ModInitializer {
 	public static void onServerStop() {
 		Identifier id = makeID("testblock");
 		((ChangeableRegistry) Registry.BLOCK).remove(id);
+		((ChangeableRegistry) Registry.BLOCK).recalculateLastID();
 		((ChangeableRegistry) Registry.ITEM).remove(id);
-		System.out.println(Registry.BLOCK.containsId(id));
+		((ChangeableRegistry) Registry.ITEM).recalculateLastID();
+		InnerRegistry.clearRegistries();
 	}
 }
