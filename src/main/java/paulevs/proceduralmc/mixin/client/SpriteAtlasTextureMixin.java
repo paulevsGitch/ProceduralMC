@@ -14,8 +14,8 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import paulevs.proceduralmc.BufferTexture;
 import paulevs.proceduralmc.InnerRegistry;
+import paulevs.proceduralmc.texturing.BufferTexture;
 
 @Mixin(SpriteAtlasTexture.class)
 public class SpriteAtlasTextureMixin {

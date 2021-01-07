@@ -1,4 +1,4 @@
-package paulevs.proceduralmc;
+package paulevs.proceduralmc.texturing;
 
 import net.minecraft.client.texture.NativeImage;
 import paulevs.proceduralmc.utils.TextureHelper;
@@ -17,6 +17,10 @@ public class BufferTexture {
 	public void setPixel(int x, int y, int r, int g, int b) {
 		int color = TextureHelper.color(r, g, b);
 		buffer[y * width + x] = color;
+	}
+	
+	public void setPixel(int x, int y, CustomColor color) {
+		buffer[y * width + x] = color.getAsInt();
 	}
 	
 	public NativeImage makeImage() {

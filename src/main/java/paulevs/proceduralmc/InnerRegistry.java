@@ -14,16 +14,23 @@ import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
+import paulevs.proceduralmc.texturing.BufferTexture;
+import paulevs.proceduralmc.utils.ChangeableRegistry;
 
 public class InnerRegistry {
 	private static final Map<BlockState, JsonUnbakedModel> BLOCK_MODELS = Maps.newHashMap();
 	private static final Map<Item, JsonUnbakedModel> ITEM_MODELS = Maps.newHashMap();
 	private static final Map<Identifier, BufferTexture> TEXTURES = Maps.newHashMap();
 	private static final Map<Identifier, Block> BLOCKS = Maps.newHashMap();
+	private static final Map<Identifier, Item> ITEMS = Maps.newHashMap();
 	private static final Set<Identifier> MODELED = Sets.newHashSet();
 	
 	public static void clearRegistries() {
+		clearRegistry(Registry.BLOCK, BLOCKS.keySet());
+		clearRegistry(Registry.ITEM, BLOCKS.keySet());
+		
 		BLOCK_MODELS.clear();
 		ITEM_MODELS.clear();
 		TEXTURES.clear();
@@ -31,8 +38,22 @@ public class InnerRegistry {
 		MODELED.clear();
 	}
 	
+	private static void clearRegistry(DefaultedRegistry<?> registry, Set<Identifier> ids) {
+		ChangeableRegistry reg = (ChangeableRegistry) registry;
+		ids.forEach((id) -> {
+			reg.remove(id);
+		});
+		reg.recalculateLastID();
+	}
+	
 	public static void registerBlock(Identifier id, Block block) {
+		Registry.register(Registry.BLOCK, id, block);
 		BLOCKS.put(id, block);
+	}
+	
+	public static void registerItem(Identifier id, Item item) {
+		Registry.register(Registry.ITEM, id, item);
+		ITEMS.put(id, item);
 	}
 	
 	public static void registerTexture(Identifier id, BufferTexture image) {
