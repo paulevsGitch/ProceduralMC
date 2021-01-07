@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -20,7 +19,7 @@ import net.minecraft.util.registry.Registry;
 public class InnerRegistry {
 	private static final Map<BlockState, JsonUnbakedModel> BLOCK_MODELS = Maps.newHashMap();
 	private static final Map<Item, JsonUnbakedModel> ITEM_MODELS = Maps.newHashMap();
-	private static final Map<Identifier, NativeImage> TEXTURES = Maps.newHashMap();
+	private static final Map<Identifier, BufferTexture> TEXTURES = Maps.newHashMap();
 	private static final Map<Identifier, Block> BLOCKS = Maps.newHashMap();
 	private static final Set<Identifier> MODELED = Sets.newHashSet();
 	
@@ -28,7 +27,7 @@ public class InnerRegistry {
 		BLOCKS.put(id, block);
 	}
 	
-	public static void registerTexture(Identifier id, NativeImage image) {
+	public static void registerTexture(Identifier id, BufferTexture image) {
 		TEXTURES.put(id, image);
 	}
 	
@@ -60,7 +59,7 @@ public class InnerRegistry {
 		return TEXTURES.keySet();
 	}
 	
-	public static NativeImage getTexture(Identifier id) {
+	public static BufferTexture getTexture(Identifier id) {
 		return TEXTURES.get(id);
 	}
 	
@@ -72,7 +71,7 @@ public class InnerRegistry {
 		return ITEM_MODELS.get(item);
 	}
 	
-	public static void iterateTextures(BiConsumer<? super Identifier, ? super NativeImage> consumer) {
+	public static void iterateTextures(BiConsumer<? super Identifier, ? super BufferTexture> consumer) {
 		TEXTURES.forEach(consumer);
 	}
 	

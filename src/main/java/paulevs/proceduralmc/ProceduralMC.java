@@ -7,11 +7,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Item.Settings;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -45,12 +44,12 @@ public class ProceduralMC implements ModInitializer {
 			if (isClient()) {
 				InnerRegistry.registerBlock(id, testblock);
 				
-				NativeImage texture = TextureHelper.makeTexture();
+				BufferTexture texture = new BufferTexture(16, 16);
 				for (int x = 0; x < 16; x++) {
 					int r = x << 4;
 					for (int y = 0; y < 16; y++) {
 						int g = y << 4;
-						TextureHelper.setPixel(texture, x, y, r, g, 128);
+						texture.setPixel(x, y, r, g, 128);
 					}
 				}
 				

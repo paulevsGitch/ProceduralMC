@@ -10,11 +10,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.fabric.impl.client.texture.FabricSprite;
 import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import paulevs.proceduralmc.BufferTexture;
 import paulevs.proceduralmc.InnerRegistry;
 
 @Mixin(SpriteAtlasTexture.class)
@@ -36,11 +36,11 @@ public class SpriteAtlasTextureMixin {
 	
 	@Inject(method = "loadSprite", at = @At("HEAD"), cancellable = true)
 	private void loadSprite(ResourceManager container, Sprite.Info info, int atlasWidth, int atlasHeight, int maxLevel, int x, int y, CallbackInfoReturnable<Sprite> callbackInfo) {
-		NativeImage texture = InnerRegistry.getTexture(info.getId());
+		BufferTexture texture = InnerRegistry.getTexture(info.getId());
 		if (texture != null) {
 			try {
 				SpriteAtlasTexture atlas = (SpriteAtlasTexture) (Object) this;
-				Sprite sprite = new FabricSprite(atlas, info, maxLevel, atlasWidth, atlasHeight, x, y, texture);
+				Sprite sprite = new FabricSprite(atlas, info, maxLevel, atlasWidth, atlasHeight, x, y, texture.makeImage());
 				callbackInfo.setReturnValue(sprite);
 				callbackInfo.cancel();
 			}
