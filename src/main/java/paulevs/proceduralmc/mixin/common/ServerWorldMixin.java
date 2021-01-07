@@ -29,7 +29,7 @@ public class ServerWorldMixin {
 	}
 	
 	@Inject(method = "save", at = @At("TAIL"))
-	public void save(ProgressListener progressListener, boolean flush, boolean bl, CallbackInfo info) {
+	public void procmcSave(ProgressListener progressListener, boolean flush, boolean bl, CallbackInfo info) {
 		ProceduralMC.onServerStop();
 	}
 }

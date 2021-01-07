@@ -107,4 +107,8 @@ public class InnerRegistry {
 	public static boolean hasCustomModel(Identifier id) {
 		return MODELED.contains(id);
 	}
+
+	public static Collection<Identifier> getItemIDs() {
+		return ITEMS.keySet();
+	}
 }
