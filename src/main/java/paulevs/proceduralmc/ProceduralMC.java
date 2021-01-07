@@ -33,7 +33,7 @@ public class ProceduralMC implements ModInitializer {
 	}
 	
 	public static void onServerStart() {
-		Identifier id = ProceduralMC.makeID("testblock");
+		Identifier id = makeID("testblock");
 		
 		if (!Registry.BLOCK.containsId(id)) {
 			Block testblock = new Block(FabricBlockSettings.copyOf(Blocks.STONE));
@@ -62,5 +62,12 @@ public class ProceduralMC implements ModInitializer {
 				MinecraftClient.getInstance().reloadResources();
 			}
 		}
+	}
+	
+	public static void onServerStop() {
+		Identifier id = makeID("testblock");
+		((ChangeableRegistry) Registry.BLOCK).remove(id);
+		((ChangeableRegistry) Registry.ITEM).remove(id);
+		System.out.println(Registry.BLOCK.containsId(id));
 	}
 }

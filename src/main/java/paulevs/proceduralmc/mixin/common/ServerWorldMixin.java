@@ -23,7 +23,7 @@ import paulevs.proceduralmc.ProceduralMC;
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
 	@Inject(method = "<init>*", at = @At("TAIL"))
-	private void init(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean debugWorld, long l, List<Spawner> list, boolean bl, CallbackInfo info) {
+	private void procmcInit(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean debugWorld, long l, List<Spawner> list, boolean bl, CallbackInfo info) {
 		ProceduralMC.onServerStart();
 	}
 }

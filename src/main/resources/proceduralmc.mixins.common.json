@@ -4,6 +4,8 @@
 	"package": "paulevs.proceduralmc.mixin.common",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
+		"MinecraftServerMixin",
+		"SimpleRegistryMixin",
 		"ServerWorldMixin"
 	],
 	"client": [],
