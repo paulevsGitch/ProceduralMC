@@ -1,13 +1,17 @@
 package paulevs.proceduralmc.texturing;
 
 import net.minecraft.util.math.MathHelper;
+import paulevs.proceduralmc.utils.MHelper;
 import paulevs.proceduralmc.utils.TextureHelper;
 
 public class CustomColor {
-	private float r;
-	private float g;
-	private float b;
+	private static final CustomColor INTERNAL = new CustomColor();
+	
+	private float x;
+	private float y;
+	private float z;
 	private float a;
+	private boolean hsvMode = false;
 	
 	public CustomColor() {
 		this(0F, 0F, 0F, 1F);
@@ -21,6 +25,10 @@ public class CustomColor {
 		set(r, g, b, a);
 	}
 	
+	public CustomColor(int r, int g, int b) {
+		set(r, g, b, 255);
+	}
+	
 	public CustomColor(int r, int g, int b, int a) {
 		set(r, g, b, a);
 	}
@@ -29,78 +37,101 @@ public class CustomColor {
 		set(value);
 	}
 	
+	public CustomColor(boolean useHSV) {
+		this();
+		hsvMode = useHSV;
+	}
+	
 	public int getAsInt() {
-		int cr = (int) MathHelper.clamp(r * 255, 0, 255);
-		int cg = (int) MathHelper.clamp(g * 255, 0, 255);
-		int cb = (int) MathHelper.clamp(b * 255, 0, 255);
+		if (this.hsvMode) {
+			return INTERNAL.set(this).switchToRGB().getAsInt();
+		}
+		int cr = (int) MathHelper.clamp(x * 255, 0, 255);
+		int cg = (int) MathHelper.clamp(y * 255, 0, 255);
+		int cb = (int) MathHelper.clamp(z * 255, 0, 255);
 		int ca = (int) MathHelper.clamp(a * 255, 0, 255);
 		return TextureHelper.color(cr, cg, cb, ca);
 	}
 	
 	public CustomColor set(int r, int g, int b, int a) {
-		this.r = r / 255F;
-		this.g = g / 255F;
-		this.b = b / 255F;
+		this.x = r / 255F;
+		this.y = g / 255F;
+		this.z = b / 255F;
 		this.a = a / 255F;
 		return this;
 	}
 	
 	public CustomColor set(float r, float g, float b, float a) {
-		this.r = r;
-		this.g = g;
-		this.b = b;
+		this.x = r;
+		this.y = g;
+		this.z = b;
 		this.a = a;
 		return this;
 	}
 	
 	public CustomColor set(CustomColor color) {
-		this.r = color.r;
-		this.g = color.g;
-		this.b = color.b;
+		this.x = color.x;
+		this.y = color.y;
+		this.z = color.z;
 		this.a = color.a;
+		this.hsvMode = color.hsvMode;
 		return this;
 	}
 	
 	public CustomColor set(int value) {
-		r = (value & 255) / 255F;
-		g = ((value >> 8) & 255) / 255F;
-		b = ((value >> 16) & 255) / 255F;
+		x = (value & 255) / 255F;
+		y = ((value >> 8) & 255) / 255F;
+		z = ((value >> 16) & 255) / 255F;
 		a = ((value >> 24) & 255) / 255F;
 		return this;
 	}
 	
 	public CustomColor mixWith(CustomColor color, float blend) {
-		this.r = MathHelper.lerp(blend, this.r, color.r);
-		this.g = MathHelper.lerp(blend, this.g, color.g);
-		this.b = MathHelper.lerp(blend, this.b, color.b);
+		if (hsvMode) {
+			/*float maxCCW = color.x - this.x;
+			float maxCW = (this.x + 1F) - color.x;
+			if (maxCCW > maxCW) {
+				this.x = MathHelper.lerp(blend, this.x, color.x) % 1.0F;
+			}
+			else {
+				this.x = MathHelper.lerp(blend, color.x, this.x) % 1.0F;
+			}*/
+			// Need better code for circle lerp
+			this.x = MHelper.wrap(MathHelper.lerp(blend, this.x, color.x), 1);
+		}
+		else {
+			this.x = MathHelper.lerp(blend, this.x, color.x);
+		}
+		this.y = MathHelper.lerp(blend, this.y, color.y);
+		this.z = MathHelper.lerp(blend, this.z, color.z);
 		this.a = MathHelper.lerp(blend, this.a, color.a);
 		return this;
 	}
 
 	public float getRed() {
-		return r;
+		return x;
 	}
 
 	public CustomColor setRed(float r) {
-		this.r = r;
+		this.x = r;
 		return this;
 	}
 
 	public float getGreen() {
-		return g;
+		return y;
 	}
 
 	public CustomColor setGreen(float g) {
-		this.g = g;
+		this.y = g;
 		return this;
 	}
 
 	public float getBlue() {
-		return b;
+		return z;
 	}
 
 	public CustomColor setBlue(float b) {
-		this.b = b;
+		this.z = b;
 		return this;
 	}
 
@@ -110,6 +141,132 @@ public class CustomColor {
 
 	public CustomColor setAlpha(float a) {
 		this.a = a;
+		return this;
+	}
+	
+	public CustomColor switchToRGB() {
+		if (hsvMode) {
+			float newRed = 0;
+			float newGreen = 0;
+			float newBlue = 0;
+			
+			if (y == 0.0F) {
+				newRed = newGreen = newBlue = z;
+			}
+			else {
+				float segment = (x - (float) Math.floor((double) x)) * 6.0F;
+				float invert = segment - (float) Math.floor((double) segment);
+				float v1 = z * (1.0F - y);
+				float v2 = z * (1.0F - y * invert);
+				float v3 = z * (1.0F - y * (1.0F - invert));
+				switch ((int) segment) {
+					case 0:
+						newRed = z;
+						newGreen = v3;
+						newBlue = v1;
+						break;
+					case 1:
+						newRed = v2;
+						newGreen = z;
+						newBlue = v1;
+						break;
+					case 2:
+						newRed = v1;
+						newGreen = z;
+						newBlue = v3;
+						break;
+					case 3:
+						newRed = v1;
+						newGreen = v2;
+						newBlue = z;
+						break;
+					case 4:
+						newRed = v3;
+						newGreen = v1;
+						newBlue = z;
+						break;
+					case 5:
+						newRed = z;
+						newGreen = v1;
+						newBlue = v2;
+				}
+			}
+			
+			x = newRed;
+			y = newGreen;
+			z = newBlue;
+		}
+		hsvMode = false;
+		return this;
+	}
+	
+	public CustomColor switchToHSV() {
+		if (!hsvMode) {
+			float br = x > y ? x : y;
+			if (z > br) {
+				br = z;
+			}
+
+			float minCol = x < y ? x : y;
+			if (z < minCol) {
+				minCol = z;
+			}
+
+			float sat = br != 0 ? (br - minCol) / br : 0;
+
+			float hue;
+			if (sat == 0.0F) {
+				hue = 0.0F;
+			} else {
+				float var9 = (float) (br - x) / (float) (br - minCol);
+				float var10 = (float) (br - y) / (float) (br - minCol);
+				float var11 = (float) (br - z) / (float) (br - minCol);
+				if (x == br) {
+					hue = var11 - var10;
+				} else if (y == br) {
+					hue = 2.0F + var9 - var11;
+				} else {
+					hue = 4.0F + var10 - var9;
+				}
+
+				hue /= 6.0F;
+				if (hue < 0.0F) {
+					++hue;
+				}
+			}
+
+			x = hue;
+			y = sat;
+			z = br;
+		}
+		hsvMode = true;
+		return this;
+	}
+	
+	public float getHue() {
+		return x;
+	}
+
+	public CustomColor setHue(float hue) {
+		this.x = MHelper.wrap(hue, 1);
+		return this;
+	}
+
+	public float getSaturation() {
+		return y;
+	}
+
+	public CustomColor setSaturation(float sat) {
+		this.y = MathHelper.clamp(sat, 0F, 1F);
+		return this;
+	}
+
+	public float getBrightness() {
+		return z;
+	}
+
+	public CustomColor setBrightness(float br) {
+		this.z = MathHelper.clamp(br, 0F, 1F);
 		return this;
 	}
 }

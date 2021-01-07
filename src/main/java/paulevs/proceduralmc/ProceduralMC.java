@@ -119,11 +119,15 @@ public class ProceduralMC implements ModInitializer {
 	}
 	
 	private static void makeRandomOreClient(Identifier id, Random random, NativeImage ingot, NativeImage stone, NativeImage... ores) {
-		float red = random.nextFloat();
-		float green = random.nextFloat();
-		float blue = random.nextFloat();
-		CustomColor dark = new CustomColor(red - 0.2F, green - 0.2F, blue - 0.2F);
-		CustomColor bright = new CustomColor(red + 0.2F, green + 0.2F, blue + 0.2F);
+		//float hue = random.nextFloat();
+		//float sat = random.nextFloat();
+		//float br = random.nextFloat();
+		//CustomColor dark = new CustomColor(true).setHue(hue - 0.1F).setSaturation(sat - 0.2F).setBrightness(br - 0.2F);
+		//CustomColor bright = new CustomColor(true).setHue(hue).setSaturation(sat).setBrightness(br);
+		
+		CustomColor dark = new CustomColor(48, 27, 31).switchToHSV();
+		CustomColor bright = new CustomColor(212, 179, 44).switchToHSV();
+		
 		ColorGragient gradient = new ColorGragient(dark, bright);
 		
 		BufferTexture texture = new BufferTexture(16, 16);
