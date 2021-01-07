@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "paulevs.proceduralmc.mixin.client",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": [],
+	"client": [
+		"SpriteAtlasTextureMixin",
+		"ModelLoaderMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

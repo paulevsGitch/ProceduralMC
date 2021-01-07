@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "proceduralmc",
+	"version": "${version}",
+
+	"name": "Procedural MC",
+	"description": "This mod allows to add content procedurally at runtime",
+	"authors": [
+		"paulevs"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+
+	"license": "MIT",
+	"icon": "assets/modid/icon.png",
+
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"paulevs.proceduralmc.ProceduralMC"
+		]
+	},
+	"mixins": [
+		"proceduralmc.mixins.client.json",
+		"proceduralmc.mixins.common.json"
+	],
+
+	"depends": {
+		"fabricloader": ">=0.7.4",
+		"fabric": "*",
+		"minecraft": "1.16.x"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

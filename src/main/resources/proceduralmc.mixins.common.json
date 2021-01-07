@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "paulevs.proceduralmc.mixin.common",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": [
+		"ServerWorldMixin"
+	],
+	"client": [],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
