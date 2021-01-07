@@ -29,7 +29,7 @@ public class InnerRegistry {
 	
 	public static void clearRegistries() {
 		clearRegistry(Registry.BLOCK, BLOCKS.keySet());
-		clearRegistry(Registry.ITEM, BLOCKS.keySet());
+		clearRegistry(Registry.ITEM, ITEMS.keySet());
 		
 		BLOCK_MODELS.clear();
 		ITEM_MODELS.clear();

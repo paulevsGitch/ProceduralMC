@@ -23,6 +23,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import paulevs.proceduralmc.texturing.BufferTexture;
@@ -51,10 +52,12 @@ public class ProceduralMC implements ModInitializer {
 		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
 	}
 	
-	public static void onServerStart() {
+	public static void onServerStart(ServerWorld world) {
 		if (register) {
 			register = false;
-			Random random = new Random(0);
+			
+			InnerRegistry.clearRegistries();
+			Random random = new Random(world.getSeed());
 			
 			Set<Identifier> ids = Sets.newHashSet();
 			for (int i = 0; i < 10; i++) {
@@ -84,7 +87,6 @@ public class ProceduralMC implements ModInitializer {
 	}
 	
 	public static void onServerStop() {
-		InnerRegistry.clearRegistries();
 		register = true;
 	}
 	
