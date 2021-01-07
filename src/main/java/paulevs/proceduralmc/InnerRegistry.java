@@ -13,11 +13,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class InnerRegistry {
-	private static final Map<BlockState, JsonUnbakedModel> MODELS = Maps.newHashMap();
+	private static final Map<BlockState, JsonUnbakedModel> BLOCK_MODELS = Maps.newHashMap();
+	private static final Map<Item, JsonUnbakedModel> ITEM_MODELS = Maps.newHashMap();
 	private static final Map<Identifier, NativeImage> TEXTURES = Maps.newHashMap();
 	private static final Map<Identifier, Block> BLOCKS = Maps.newHashMap();
 	private static final Set<Identifier> MODELED = Sets.newHashSet();
@@ -34,7 +36,7 @@ public class InnerRegistry {
 		JsonUnbakedModel model = JsonUnbakedModel.deserialize(json);
 		Identifier id = Registry.BLOCK.getId(state.getBlock());
 		model.id = BlockModels.getModelId(id, state).toString();
-		MODELS.put(state, model);
+		BLOCK_MODELS.put(state, model);
 		MODELED.add(id);
 	}
 	
@@ -42,7 +44,15 @@ public class InnerRegistry {
 		JsonUnbakedModel model = JsonUnbakedModel.deserialize(json);
 		Identifier id = Registry.BLOCK.getId(block);
 		model.id = id.toString();
-		MODELS.put(block.getDefaultState(), model);
+		BLOCK_MODELS.put(block.getDefaultState(), model);
+		MODELED.add(id);
+	}
+	
+	public static void registerItemModel(Item item, String json) {
+		JsonUnbakedModel model = JsonUnbakedModel.deserialize(json);
+		Identifier id = Registry.ITEM.getId(item);
+		model.id = id.getNamespace() + ":item/" + id.getPath();
+		ITEM_MODELS.put(item, model);
 		MODELED.add(id);
 	}
 	
@@ -55,7 +65,11 @@ public class InnerRegistry {
 	}
 	
 	public static JsonUnbakedModel getModel(BlockState state) {
-		return MODELS.get(state);
+		return BLOCK_MODELS.get(state);
+	}
+	
+	public static JsonUnbakedModel getModel(Item item) {
+		return ITEM_MODELS.get(item);
 	}
 	
 	public static void iterateTextures(BiConsumer<? super Identifier, ? super NativeImage> consumer) {

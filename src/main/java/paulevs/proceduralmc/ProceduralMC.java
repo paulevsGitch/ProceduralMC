@@ -9,6 +9,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Item.Settings;
 import net.minecraft.util.Identifier;
@@ -37,8 +38,9 @@ public class ProceduralMC implements ModInitializer {
 		
 		if (!Registry.BLOCK.containsId(id)) {
 			Block testblock = new Block(FabricBlockSettings.copyOf(Blocks.STONE));
+			Item blockItem = new BlockItem(testblock, new Settings().group(ItemGroup.BUILDING_BLOCKS));
 			Registry.register(Registry.BLOCK, id, testblock);
-			Registry.register(Registry.ITEM, id, new BlockItem(testblock, new Settings().group(ItemGroup.BUILDING_BLOCKS)));
+			Registry.register(Registry.ITEM, id, blockItem);
 			
 			if (isClient()) {
 				InnerRegistry.registerBlock(id, testblock);
@@ -55,6 +57,7 @@ public class ProceduralMC implements ModInitializer {
 				Identifier textureID = TextureHelper.makeBlockTextureID("testblock");
 				InnerRegistry.registerTexture(textureID, texture);
 				InnerRegistry.registerBlockModel(testblock, ModelHelper.makeCube(textureID));
+				InnerRegistry.registerItemModel(blockItem, ModelHelper.makeCube(textureID));
 				
 				SilentWorldReloader.setSilent();
 				MinecraftClient.getInstance().reloadResources();

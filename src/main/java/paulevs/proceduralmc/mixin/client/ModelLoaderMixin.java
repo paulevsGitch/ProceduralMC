@@ -15,6 +15,7 @@ import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import paulevs.proceduralmc.InnerRegistry;
@@ -36,12 +37,26 @@ public class ModelLoaderMixin {
 			Identifier cleanID = new Identifier(id.getNamespace(), id.getPath());
 			if (InnerRegistry.hasCustomModel(cleanID)) {
 				if (modelID.getVariant().equals("inventory")) {
-					String json = String.format("{\"parent\": \"%s:block/%s\"}", id.getNamespace(), id.getPath());
+					/*String json = String.format("{\"parent\": \"%s:block/%s\"}", id.getNamespace(), id.getPath());
 					Identifier itemID = new Identifier(id.getNamespace(), "item/" + id.getPath());
 					JsonUnbakedModel model = JsonUnbakedModel.deserialize(json);
 					model.id = itemID.toString();
 					putModel(modelID, model);
 					this.unbakedModels.put(itemID, model);
+					info.cancel();*/
+					
+					/*Block block = Registry.BLOCK.get(modelID);
+					JsonUnbakedModel model = InnerRegistry.getModel(block.getDefaultState());
+					Identifier itemID = new Identifier(id.getNamespace(), "item/" + id.getPath());
+					model.id = itemID.toString();
+					putModel(modelID, model);
+					this.unbakedModels.put(itemID, model);
+					info.cancel();*/
+					
+					Item item = Registry.ITEM.get(cleanID);
+					JsonUnbakedModel model = InnerRegistry.getModel(item);
+					putModel(modelID, model);
+					this.unbakedModels.put(new Identifier(model.id), model);
 					info.cancel();
 				}
 				else {
