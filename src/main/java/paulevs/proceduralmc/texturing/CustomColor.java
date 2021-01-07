@@ -10,7 +10,7 @@ public class CustomColor {
 	private float a;
 	
 	public CustomColor() {
-		this(0F, 0F, 0F, 0F);
+		this(0F, 0F, 0F, 1F);
 	}
 	
 	public CustomColor(float r, float g, float b) {
@@ -33,7 +33,8 @@ public class CustomColor {
 		int cr = (int) MathHelper.clamp(r * 255, 0, 255);
 		int cg = (int) MathHelper.clamp(g * 255, 0, 255);
 		int cb = (int) MathHelper.clamp(b * 255, 0, 255);
-		return TextureHelper.color(cr, cg, cb);
+		int ca = (int) MathHelper.clamp(a * 255, 0, 255);
+		return TextureHelper.color(cr, cg, cb, ca);
 	}
 	
 	public CustomColor set(int r, int g, int b, int a) {
@@ -56,6 +57,7 @@ public class CustomColor {
 		this.r = color.r;
 		this.g = color.g;
 		this.b = color.b;
+		this.a = color.a;
 		return this;
 	}
 	
@@ -71,41 +73,42 @@ public class CustomColor {
 		this.r = MathHelper.lerp(blend, this.r, color.r);
 		this.g = MathHelper.lerp(blend, this.g, color.g);
 		this.b = MathHelper.lerp(blend, this.b, color.b);
+		this.a = MathHelper.lerp(blend, this.a, color.a);
 		return this;
 	}
 
-	public float getR() {
+	public float getRed() {
 		return r;
 	}
 
-	public CustomColor setR(float r) {
+	public CustomColor setRed(float r) {
 		this.r = r;
 		return this;
 	}
 
-	public float getG() {
+	public float getGreen() {
 		return g;
 	}
 
-	public CustomColor setG(float g) {
+	public CustomColor setGreen(float g) {
 		this.g = g;
 		return this;
 	}
 
-	public float getB() {
+	public float getBlue() {
 		return b;
 	}
 
-	public CustomColor setB(float b) {
+	public CustomColor setBlue(float b) {
 		this.b = b;
 		return this;
 	}
 
-	public float getA() {
+	public float getAlpha() {
 		return a;
 	}
 
-	public CustomColor setA(float a) {
+	public CustomColor setAlpha(float a) {
 		this.a = a;
 		return this;
 	}

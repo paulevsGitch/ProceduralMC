@@ -131,8 +131,8 @@ public class ProceduralMC implements ModInitializer {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				CustomColor color = TextureHelper.getFromTexture(ore, x, y);
-				float r = color.getR();
-				float a = color.getA();
+				float r = color.getRed();
+				float a = color.getAlpha();
 				color = TextureHelper.getFromTexture(stone, x, y);
 				if (a > 0) {
 					color = gradient.getColor(r);
@@ -150,8 +150,8 @@ public class ProceduralMC implements ModInitializer {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				CustomColor color = TextureHelper.getFromTexture(ingot, x, y);
-				if (color.getA() > 0) {
-					color = gradient.getColor(color.getR());
+				if (color.getAlpha() > 0) {
+					color = gradient.getColor(color.getRed());
 				}
 				texture.setPixel(x, y, color);
 			}
