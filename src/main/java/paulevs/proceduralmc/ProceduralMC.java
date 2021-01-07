@@ -26,6 +26,7 @@ import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import paulevs.proceduralmc.namegen.MarkovNameGen;
 import paulevs.proceduralmc.texturing.BufferTexture;
 import paulevs.proceduralmc.texturing.ColorGragient;
 import paulevs.proceduralmc.texturing.CustomColor;
@@ -38,7 +39,9 @@ public class ProceduralMC implements ModInitializer {
 	private static boolean register = true;
 	
 	@Override
-	public void onInitialize() {}
+	public void onInitialize() {
+		MarkovNameGen.init();
+	}
 	
 	public static Identifier makeID(String name) {
 		return new Identifier(MOD_ID, name);
@@ -60,9 +63,13 @@ public class ProceduralMC implements ModInitializer {
 			Random random = new Random(world.getSeed());
 			
 			Set<Identifier> ids = Sets.newHashSet();
+			Set<String> names = Sets.newHashSet();
 			for (int i = 0; i < 10; i++) {
-				String name = Long.toString(random.nextLong());
-				Identifier id = makeID(name);
+				String name = MarkovNameGen.makeOreName(random, names);
+				Identifier id = makeID(name.toLowerCase());
+				String orename = id.getNamespace() + "." + id.getPath();
+				MarkovNameGen.addTranslation("block." + orename, name);
+				MarkovNameGen.addTranslation("item." + orename + "_ingot", name + " Ingot");
 				ids.add(id);
 			}
 			
