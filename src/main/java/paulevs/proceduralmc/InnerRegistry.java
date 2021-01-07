@@ -18,6 +18,7 @@ import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
 import paulevs.proceduralmc.texturing.BufferTexture;
 import paulevs.proceduralmc.utils.ChangeableRegistry;
+import paulevs.proceduralmc.utils.ModelHelper;
 
 public class InnerRegistry {
 	private static final Map<BlockState, JsonUnbakedModel> BLOCK_MODELS = Maps.newHashMap();
@@ -36,6 +37,8 @@ public class InnerRegistry {
 		TEXTURES.clear();
 		BLOCKS.clear();
 		MODELED.clear();
+		
+		ModelHelper.MODELS.clear();
 	}
 	
 	private static void clearRegistry(DefaultedRegistry<?> registry, Set<Identifier> ids) {

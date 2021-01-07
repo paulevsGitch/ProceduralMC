@@ -40,6 +40,7 @@ public class SilentWorldReloader extends Thread {
 				@Override
 				public void run() {
 					worldRenderer.reload();
+					client.getItemRenderer().getModels().reloadModels();
 					other = null;
 				}
 			});

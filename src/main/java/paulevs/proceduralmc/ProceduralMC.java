@@ -149,7 +149,7 @@ public class ProceduralMC implements ModInitializer {
 		texture = new BufferTexture(16, 16);
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
-				CustomColor color = TextureHelper.getFromTexture(stone, x, y);
+				CustomColor color = TextureHelper.getFromTexture(ingot, x, y);
 				if (color.getA() > 0) {
 					color = gradient.getColor(color.getR());
 				}

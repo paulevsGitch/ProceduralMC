@@ -19,6 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import paulevs.proceduralmc.InnerRegistry;
+import paulevs.proceduralmc.utils.ModelHelper;
 
 @Mixin(ModelLoader.class)
 public class ModelLoaderMixin {
@@ -39,13 +40,11 @@ public class ModelLoaderMixin {
 					Item item = Registry.ITEM.get(cleanID);
 					JsonUnbakedModel model = InnerRegistry.getModel(item);
 					if (model != null) {
-						System.out.println(cleanID + " " + model.id + " " + modelID);
-						
+						ModelHelper.MODELS.put(Registry.ITEM.get(cleanID), modelID);
 						Identifier identifier2 = new Identifier(id.getNamespace(), "item/" + id.getPath());
-						
+						model.id = identifier2.toString();
 						putModel(modelID, model);
 						unbakedModels.put(identifier2, model);
-						
 						info.cancel();
 					}
 					else {
