@@ -41,6 +41,10 @@ public class TextureHelper {
 		return ProceduralMC.makeID("block/" + name);
 	}
 	
+	public static Identifier makeItemTextureID(String name) {
+		return ProceduralMC.makeID("item/" + name);
+	}
+	
 	public static CustomColor getFromTexture(NativeImage img, int x, int y) {
 		return COLOR.set(img.getPixelColor(x, y));
 	}

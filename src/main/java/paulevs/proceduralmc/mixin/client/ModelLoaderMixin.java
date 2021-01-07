@@ -31,7 +31,6 @@ public class ModelLoaderMixin {
 
 	@Inject(method = "loadModel", at = @At("HEAD"), cancellable = true)
 	private void loadModel(Identifier id, CallbackInfo info) throws Exception {
-
 		if (id instanceof ModelIdentifier) {
 			ModelIdentifier modelID = (ModelIdentifier) id;
 			Identifier cleanID = new Identifier(id.getNamespace(), id.getPath());
@@ -55,9 +54,16 @@ public class ModelLoaderMixin {
 					
 					Item item = Registry.ITEM.get(cleanID);
 					JsonUnbakedModel model = InnerRegistry.getModel(item);
-					putModel(modelID, model);
-					this.unbakedModels.put(new Identifier(model.id), model);
-					info.cancel();
+					if (model != null) {
+						model.id = id.getNamespace() + ":item/" + id.getPath();
+						System.out.println(model.id);
+						putModel(modelID, model);
+						this.unbakedModels.put(new Identifier(model.id), model);
+						info.cancel();
+					}
+					else {
+						System.out.println(String.format("Missing item model for %s", cleanID));
+					}
 				}
 				else {
 					Block block = Registry.BLOCK.get(cleanID);
@@ -68,7 +74,7 @@ public class ModelLoaderMixin {
 							putModel(stateID, model);
 						}
 						else {
-							System.out.println(String.format("Missing model for %s for state %s", cleanID, state));
+							System.out.println(String.format("Missing block model for %s for state %s", cleanID, state));
 						}
 					});
 					info.cancel();
