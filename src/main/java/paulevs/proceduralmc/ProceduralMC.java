@@ -13,6 +13,10 @@ import net.minecraft.item.Item.Settings;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import paulevs.proceduralmc.utils.ChangeableRegistry;
+import paulevs.proceduralmc.utils.ModelHelper;
+import paulevs.proceduralmc.utils.SilentWorldReloader;
+import paulevs.proceduralmc.utils.TextureHelper;
 
 public class ProceduralMC implements ModInitializer {
 	public static final String MOD_ID = "proceduralmc";

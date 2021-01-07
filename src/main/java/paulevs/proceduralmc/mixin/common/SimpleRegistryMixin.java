@@ -14,7 +14,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-import paulevs.proceduralmc.ChangeableRegistry;
+import paulevs.proceduralmc.utils.ChangeableRegistry;
 
 @Mixin(SimpleRegistry.class)
 public class SimpleRegistryMixin<T> implements ChangeableRegistry {

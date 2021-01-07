@@ -1,4 +1,4 @@
-package paulevs.proceduralmc;
+package paulevs.proceduralmc.utils;
 
 import net.minecraft.util.Identifier;
 

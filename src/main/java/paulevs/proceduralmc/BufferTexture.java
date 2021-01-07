@@ -1,6 +1,7 @@
 package paulevs.proceduralmc;
 
 import net.minecraft.client.texture.NativeImage;
+import paulevs.proceduralmc.utils.TextureHelper;
 
 public class BufferTexture {
 	final int width;

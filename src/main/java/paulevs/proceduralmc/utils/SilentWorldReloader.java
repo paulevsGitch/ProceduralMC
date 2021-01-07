@@ -1,4 +1,4 @@
-package paulevs.proceduralmc;
+package paulevs.proceduralmc.utils;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

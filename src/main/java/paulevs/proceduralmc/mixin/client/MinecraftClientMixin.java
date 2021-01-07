@@ -14,7 +14,7 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.util.Unit;
-import paulevs.proceduralmc.SilentWorldReloader;
+import paulevs.proceduralmc.utils.SilentWorldReloader;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
