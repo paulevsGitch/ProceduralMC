@@ -41,7 +41,7 @@ public class SimpleRegistryMixin<T> implements ChangeableRegistry {
 		T entry = idToEntry.get(key);
 		if (entry != null) {
 			int rawID = entryToRawId.getInt(entry);
-			rawIdToEntry.remove(rawID);
+			rawIdToEntry.set(rawID, null);
 			entryToRawId.removeInt(rawID);
 			idToEntry.remove(key);
 			keyToEntry.inverse().remove(entry);
@@ -51,10 +51,10 @@ public class SimpleRegistryMixin<T> implements ChangeableRegistry {
 
 	@Override
 	public void recalculateLastID() {
-		nextId = 0;
+		int lastID = 0;
 		for (int id: entryToRawId.values()) {
-			nextId = id > nextId ? id : nextId;
+			lastID = id > lastID ? id : lastID;
 		}
-		nextId ++;
+		nextId = lastID + 1;
 	}
 }
