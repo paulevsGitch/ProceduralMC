@@ -9,14 +9,14 @@ import com.google.common.collect.Maps;
 
 import paulevs.proceduralmc.ProceduralMC;
 
-public class MarkovNameGen {
+public class NameGenerator {
 	private static final MarkovChain ORE_GEN = makeChain("ores");
 	private static final Map<String, String> NAMES = Maps.newHashMap();
 	
 	public static void init() {}
 	
 	private static MarkovChain makeChain(String name) {
-		InputStream stream = MarkovNameGen.class.getResourceAsStream("/assets/" + ProceduralMC.MOD_ID + "/namegen/" + name + ".txt");
+		InputStream stream = NameGenerator.class.getResourceAsStream("/assets/" + ProceduralMC.MOD_ID + "/namegen/" + name + ".txt");
 		return new MarkovChain(stream);
 	}
 	
