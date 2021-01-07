@@ -56,6 +56,7 @@ public class ProceduralMC implements ModInitializer {
 				InnerRegistry.registerTexture(textureID, texture);
 				InnerRegistry.registerBlockModel(testblock, ModelHelper.makeCube(textureID));
 				
+				SilentWorldReloader.setSilent();
 				MinecraftClient.getInstance().reloadResources();
 			}
 		}
