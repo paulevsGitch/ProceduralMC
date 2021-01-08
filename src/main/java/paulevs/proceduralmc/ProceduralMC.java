@@ -96,6 +96,8 @@ public class ProceduralMC implements ModInitializer {
 			InnerRegistry.registerItemModel(item, ModelHelper.makeFlatItem(texture));
 			InnerRegistry.registerItemModel(item2, ModelHelper.makeFlatItem(texture2));
 			
+			world.getServer().reloadResources(world.getServer().getDataPackManager().getEnabledNames());
+			
 			RANDOM.setSeed(seed);
 			if (isClient()) {
 				ModelHelper.clearModels();
@@ -104,10 +106,9 @@ public class ProceduralMC implements ModInitializer {
 					material.initClient(RANDOM);
 				});
 				
-				SilentWorldReloader.setSilent();
+				//SilentWorldReloader.setSilent();
 				MinecraftClient.getInstance().reloadResources();
 			}
-			world.getServer().reloadResources(world.getServer().getDataPackManager().getEnabledNames());
 		}
 	}
 	
