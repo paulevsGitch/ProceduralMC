@@ -104,6 +104,7 @@ public class ProceduralMC implements ModInitializer {
 				SilentWorldReloader.setSilent();
 				MinecraftClient.getInstance().reloadResources();
 			}
+			world.getServer().reloadResources(world.getServer().getDataPackManager().getEnabledNames());
 		}
 	}
 	
