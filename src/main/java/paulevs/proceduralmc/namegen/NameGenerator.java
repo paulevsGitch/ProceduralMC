@@ -27,7 +27,9 @@ public class NameGenerator {
 			result = chain.makeWord(min, max, random);
 			result = result.isEmpty() ? Long.toHexString(random.nextLong()).toLowerCase() : result;
 		}
-		return preNames.contains(result) ? result + "_" + Integer.toHexString(random.nextInt()) : result;
+		result = preNames.contains(result) ? result + "_" + Integer.toHexString(random.nextInt()) : result;
+		preNames.add(result);
+		return result;
 	}
 	
 	public static String makeOreName(Random random, Set<String> preNames) {

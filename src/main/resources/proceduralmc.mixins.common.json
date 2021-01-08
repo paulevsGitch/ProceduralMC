@@ -4,7 +4,11 @@
 	"package": "paulevs.proceduralmc.mixin.common",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
+		"RecipeManagerAccessor",
+		"MinecraftServerMixin",
 		"SimpleRegistryMixin",
+		"TagGroupLoaderMixin",
+		"RecipeManagerMixin",
 		"ServerWorldMixin"
 	],
 	"client": [],

@@ -1,5 +1,6 @@
 package paulevs.proceduralmc.mixin.client;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.spongepowered.asm.mixin.Final;
@@ -8,6 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.render.block.BlockModels;
@@ -29,6 +31,15 @@ public class ModelLoaderMixin {
 	
 	@Shadow
 	private void putModel(Identifier id, UnbakedModel unbakedModel) {}
+	
+	@Inject(method = "loadModelFromJson", at = @At("HEAD"), cancellable = true)
+	private void procmcLoadModelFromJson(Identifier id, CallbackInfoReturnable<JsonUnbakedModel> info) throws IOException {
+		JsonUnbakedModel model = InnerRegistry.getModel(id);
+		if (model != null) {
+			info.setReturnValue(model);
+			info.cancel();
+		}
+	}
 
 	@Inject(method = "loadModel", at = @At("HEAD"), cancellable = true)
 	private void procmcLoadModel(Identifier id, CallbackInfo info) throws Exception {
@@ -54,7 +65,7 @@ public class ModelLoaderMixin {
 				else {
 					Block block = Registry.BLOCK.get(cleanID);
 					block.getStateManager().getStates().forEach((state) -> {
-						JsonUnbakedModel model = InnerRegistry.getModel(state);
+						UnbakedModel model = InnerRegistry.getModel(state);
 						if (model != null) {
 							ModelIdentifier stateID = BlockModels.getModelId(cleanID, state);
 							putModel(stateID, model);
