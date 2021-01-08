@@ -2,11 +2,13 @@ package paulevs.proceduralmc;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -20,8 +22,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import paulevs.proceduralmc.texturing.BufferTexture;
-import paulevs.proceduralmc.utils.ChangeableRegistry;
 
 public class InnerRegistry {
 	private static final Map<BlockState, UnbakedModel> BLOCK_MODELS = Maps.newHashMap();
@@ -43,12 +45,24 @@ public class InnerRegistry {
 		MODELED.clear();
 	}
 	
-	private static void clearRegistry(DefaultedRegistry<?> registry, Set<Identifier> ids) {
-		ChangeableRegistry reg = (ChangeableRegistry) registry;
+	private static <T> void clearRegistry(DefaultedRegistry<T> registry, Set<Identifier> ids) {
+		/*ChangeableRegistry reg = (ChangeableRegistry) registry;
 		ids.forEach((id) -> {
 			reg.remove(id);
 		});
-		reg.recalculateLastID();
+		reg.recalculateLastID();*/
+		/*T def = registry.get(registry.getDefaultId());
+		ids.forEach((id) -> {
+			replace(registry, id, def);
+		});*/
+	}
+	
+	private static <T> void replace(DefaultedRegistry<T> registry, Identifier id, T replacement) {
+		T entry = registry.get(id);
+		int rawId = registry.getRawId(entry);
+		RegistryKey<T> key = registry.getKey(entry).get();
+		Lifecycle lifecycle = registry.getEntryLifecycle(entry);
+		registry.replace(OptionalInt.of(rawId), key, replacement, lifecycle);
 	}
 	
 	public static Block registerBlockAndItem(String name, Block block, ItemGroup group) {
@@ -63,13 +77,23 @@ public class InnerRegistry {
 	}
 	
 	public static Block registerBlock(Identifier id, Block block) {
-		Registry.register(Registry.BLOCK, id, block);
+		if (Registry.BLOCK.containsId(id)) {
+			replace(Registry.BLOCK, id, block);
+		}
+		else {
+			Registry.register(Registry.BLOCK, id, block);
+		}
 		BLOCKS.put(id, block);
 		return block;
 	}
 	
 	public static Item registerItem(Identifier id, Item item) {
-		Registry.register(Registry.ITEM, id, item);
+		if (Registry.ITEM.containsId(id)) {
+			replace(Registry.ITEM, id, item);
+		}
+		else {
+			Registry.register(Registry.ITEM, id, item);
+		}
 		ITEMS.put(id, item);
 		return item;
 	}

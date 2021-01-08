@@ -5,6 +5,7 @@ import java.util.Random;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -53,6 +54,56 @@ public class TextureHelper {
 	
 	public static CustomColor getFromTexture(NativeImage img, int x, int y) {
 		return COLOR.set(img.getPixelColor(x, y));
+	}
+	
+	public static CustomColor getFromTexture(BufferTexture img, float x, float y) {
+		int x1 = MathHelper.floor(MHelper.wrap(x, img.getWidth()));
+		int y1 = MathHelper.floor(MHelper.wrap(y, img.getHeight()));
+		int x2 = (x1 + 1) % img.getWidth();
+		int y2 = (y1 + 1) % img.getHeight();
+		float deltaX = x - MathHelper.floor(x);
+		float deltaY = y - MathHelper.floor(y);
+		
+		COLOR.set(img.getPixel(x1, y1));
+		float r1 = COLOR.getRed();
+		float g1 = COLOR.getGreen();
+		float b1 = COLOR.getBlue();
+		float a1 = COLOR.getAlpha();
+		
+		COLOR.set(img.getPixel(x2, y1));
+		float r2 = COLOR.getRed();
+		float g2 = COLOR.getGreen();
+		float b2 = COLOR.getBlue();
+		float a2 = COLOR.getAlpha();
+		
+		COLOR.set(img.getPixel(x1, y2));
+		float r3 = COLOR.getRed();
+		float g3 = COLOR.getGreen();
+		float b3 = COLOR.getBlue();
+		float a3 = COLOR.getAlpha();
+		
+		COLOR.set(img.getPixel(x2, y2));
+		float r4 = COLOR.getRed();
+		float g4 = COLOR.getGreen();
+		float b4 = COLOR.getBlue();
+		float a4 = COLOR.getAlpha();
+		
+		r1 = MathHelper.lerp(deltaX, r1, r2);
+		g1 = MathHelper.lerp(deltaX, g1, g2);
+		b1 = MathHelper.lerp(deltaX, b1, b2);
+		a1 = MathHelper.lerp(deltaX, a1, a2);
+		
+		r2 = MathHelper.lerp(deltaX, r3, r4);
+		g2 = MathHelper.lerp(deltaX, g3, g4);
+		b2 = MathHelper.lerp(deltaX, b3, b4);
+		a2 = MathHelper.lerp(deltaX, a3, a4);
+		
+		r1 = MathHelper.lerp(deltaY, r1, r2);
+		g1 = MathHelper.lerp(deltaY, g1, g2);
+		b1 = MathHelper.lerp(deltaY, b1, b2);
+		a1 = MathHelper.lerp(deltaY, a1, a2);
+		
+		return COLOR.set(r1, g1, b1, a1);
 	}
 	
 	public static NativeImage loadImage(String name) {
@@ -141,13 +192,34 @@ public class TextureHelper {
 	}
 	
 	public static BufferTexture blend(BufferTexture a, BufferTexture b, float mix) {
+		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
 		for (int x = 0; x < a.getWidth(); x++) {
 			for (int y = 0; y < a.getHeight(); y++) {
 				COLOR.set(a.getPixel(x, y)).mixWith(COLOR2.set(b.getPixel(x, y)), mix);
-				a.setPixel(x, y, COLOR);
+				result.setPixel(x, y, COLOR);
 			}
 		}
-		return a;
+		return result;
+	}
+	
+	public static BufferTexture cover(BufferTexture a, BufferTexture b) {
+		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
+		for (int x = 0; x < a.getWidth(); x++) {
+			for (int y = 0; y < a.getHeight(); y++) {
+				int pixelA = a.getPixel(x, y);
+				int pixelB = b.getPixel(x, y);
+				COLOR.set(pixelA);
+				if (COLOR.getAlpha() < 0.01F) {
+					result.setPixel(x, y, COLOR);
+				}
+				else {
+					COLOR2.set(pixelB);
+					COLOR.set(pixelA).mixWith(COLOR2.set(pixelB), COLOR2.getAlpha());
+				}
+				result.setPixel(x, y, COLOR);
+			}
+		}
+		return result;
 	}
 	
 	public static BufferTexture clamp(BufferTexture texture, int levels) {
@@ -172,6 +244,33 @@ public class TextureHelper {
 			}
 		}
 		return texture;
+	}
+	
+	public static BufferTexture distort(BufferTexture texture, BufferTexture distortion, float amount) {
+		BufferTexture result = new BufferTexture(texture.getWidth(), texture.getHeight());
+		Vector3f dirX = new Vector3f();
+		Vector3f dirY = new Vector3f();
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(distortion.getPixel(x, y));
+				float h1 = COLOR.getRed();
+				COLOR.set(distortion.getPixel((x + 1) % distortion.getWidth(), y));
+				float h2 = COLOR.getRed();
+				COLOR.set(distortion.getPixel(x, (y + 1) % distortion.getHeight()));
+				float h3 = COLOR.getRed();
+				dirX.set(1, h2 - h1, 1);
+				dirY.set(1, h3 - h1, 1);
+				dirX.normalize();
+				dirY.normalize();
+				dirX.cross(dirY);
+				dirX.normalize();
+				
+				float dx = dirX.getX() * amount;
+				float dy = dirX.getY() * amount;
+				result.setPixel(x, y, getFromTexture(texture, x + dx, y + dy));
+			}
+		}
+		return result;
 	}
 
 	public static ColorGradient makeSoftPalette(CustomColor color) {

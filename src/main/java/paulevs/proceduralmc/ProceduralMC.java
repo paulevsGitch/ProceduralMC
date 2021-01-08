@@ -48,69 +48,76 @@ public class ProceduralMC implements ModInitializer {
 	}
 	
 	public static void onServerStart(ServerWorld world) {
-		if (register && seed != world.getSeed()) {
-			System.out.println("Start new generator!");
-			
-			register = false;
-			seed = world.getSeed();
-			
-			InnerRegistry.clearRegistries();
-			TagHelper.clearTags();
-			StoneMaterial.resetMaterials();
-			
-			if (isClient()) {
-				ModelHelper.clearModels();
-			}
-			
-			RANDOM.setSeed(seed);
-			List<ComplexMaterial> materials = Lists.newArrayList();
-			
-			for (int i = 0; i < 10; i++) {
-				StoneMaterial material = new StoneMaterial(RANDOM);
-				materials.add(material);
-			}
-			
-			Item item = InnerRegistry.registerItem(makeID("test_hue1"), new Item(new Settings().group(CreativeTabs.ITEMS)));
-			Item item2 = InnerRegistry.registerItem(makeID("test_hue2"), new Item(new Settings().group(CreativeTabs.ITEMS)));
-			Identifier texture = TextureHelper.makeItemTextureID("test_hue1");
-			Identifier texture2 = TextureHelper.makeItemTextureID("test_hue2");
-			
-			NativeImage stoneTex = TextureHelper.loadImage("textures/item/ingot.png");
-			
-			CustomColor start = new CustomColor(61, 37, 50).switchToHSV();
-			CustomColor end = new CustomColor(246, 161, 40).switchToHSV();
-			CustomColor start2 = new CustomColor(61, 37, 50);
-			CustomColor end2 = new CustomColor(246, 161, 40);
-			
-			ColorGradient gradient = new ColorGradient(start, end);
-			ColorGradient gradient2 = new ColorGradient(start2, end2);
-			
-			BufferTexture image = new BufferTexture(16, 16);
-			BufferTexture image2 = new BufferTexture(16, 16);
-			
-			for (int x = 0; x < 16; x++) {
-				for (int y = 0; y < 16; y++) {
-					CustomColor color = TextureHelper.getFromTexture(stoneTex, x, y);
-					image.setPixel(x, y, gradient.getColor(color.getRed()).setAlpha(color.getAlpha()));
-					image2.setPixel(x, y, gradient2.getColor(color.getRed()).setAlpha(color.getAlpha()));
-				}
-			}
-			
-			InnerRegistry.registerTexture(texture, image);
-			InnerRegistry.registerTexture(texture2, image2);
-			InnerRegistry.registerItemModel(item, ModelHelper.makeFlatItem(texture));
-			InnerRegistry.registerItemModel(item2, ModelHelper.makeFlatItem(texture2));
-			
-			world.getServer().reloadResources(world.getServer().getDataPackManager().getEnabledNames());
-			
-			RANDOM.setSeed(seed);
-			if (isClient()) {
-				materials.forEach((material) -> {
-					material.initClient(RANDOM);
-				});
+		synchronized(world) {
+			if (register && seed != world.getSeed()) {
+				System.out.println("Start new generator!");
 				
-				MinecraftClient.getInstance().getItemRenderer().getModels().reloadModels();
-				MinecraftClient.getInstance().reloadResources();
+				register = false;
+				seed = world.getSeed();
+				
+				InnerRegistry.clearRegistries();
+				TagHelper.clearTags();
+				StoneMaterial.resetMaterials();
+				
+				if (isClient()) {
+					ModelHelper.clearModels();
+				}
+				
+				RANDOM.setSeed(seed);
+				List<ComplexMaterial> materials = Lists.newArrayList();
+				
+				for (int i = 0; i < 8; i++) {
+					StoneMaterial material = new StoneMaterial(RANDOM);
+					materials.add(material);
+				}
+				
+				Item item = InnerRegistry.registerItem(makeID("test_hue1"), new Item(new Settings().group(CreativeTabs.ITEMS)));
+				Item item2 = InnerRegistry.registerItem(makeID("test_hue2"), new Item(new Settings().group(CreativeTabs.ITEMS)));
+				Identifier texture = TextureHelper.makeItemTextureID("test_hue1");
+				Identifier texture2 = TextureHelper.makeItemTextureID("test_hue2");
+				
+				NativeImage stoneTex = TextureHelper.loadImage("textures/item/ingot.png");
+				
+				CustomColor start = new CustomColor(61, 37, 50).switchToHSV();
+				CustomColor end = new CustomColor(246, 161, 40).switchToHSV();
+				CustomColor start2 = new CustomColor(61, 37, 50);
+				CustomColor end2 = new CustomColor(246, 161, 40);
+				
+				ColorGradient gradient = new ColorGradient(start, end);
+				ColorGradient gradient2 = new ColorGradient(start2, end2);
+				
+				BufferTexture image = new BufferTexture(16, 16);
+				BufferTexture image2 = new BufferTexture(16, 16);
+				
+				for (int x = 0; x < 16; x++) {
+					for (int y = 0; y < 16; y++) {
+						CustomColor color = TextureHelper.getFromTexture(stoneTex, x, y);
+						image.setPixel(x, y, gradient.getColor(color.getRed()).setAlpha(color.getAlpha()));
+						image2.setPixel(x, y, gradient2.getColor(color.getRed()).setAlpha(color.getAlpha()));
+					}
+				}
+				
+				InnerRegistry.registerTexture(texture, image);
+				InnerRegistry.registerTexture(texture2, image2);
+				InnerRegistry.registerItemModel(item, ModelHelper.makeFlatItem(texture));
+				InnerRegistry.registerItemModel(item2, ModelHelper.makeFlatItem(texture2));
+				
+				world.getServer().reloadResources(world.getServer().getDataPackManager().getEnabledNames());
+				
+				System.out.println("Make Client update!");
+				RANDOM.setSeed(seed);
+				if (isClient()) {
+					materials.forEach((material) -> {
+						material.initClient(RANDOM);
+					});
+					
+					MinecraftClient.getInstance().reloadResources().thenRun(new Runnable() {
+						@Override
+						public void run() {
+							MinecraftClient.getInstance().getItemRenderer().getModels().reloadModels();
+						}
+					});
+				}
 			}
 		}
 	}

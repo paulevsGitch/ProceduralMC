@@ -14,6 +14,17 @@ public class BufferTexture {
 		buffer = new int[width * height];
 	}
 	
+	public BufferTexture(NativeImage image) {
+		this.width = image.getWidth();
+		this.height = image.getHeight();
+		buffer = new int[width * height];
+		for (int i = 0; i < buffer.length; i++) {
+			int x = i % width;
+			int y = i / width;
+			buffer[i] = image.getPixelColor(x, y);
+		}
+	}
+	
 	public void setPixel(int x, int y, int r, int g, int b) {
 		int color = TextureHelper.color(r, g, b);
 		buffer[y * width + x] = color;
