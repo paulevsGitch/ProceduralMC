@@ -71,13 +71,18 @@ public class ProceduralMC implements ModInitializer {
 			Identifier texture2 = TextureHelper.makeItemTextureID("test_hue2");
 			
 			NativeImage stoneTex = TextureHelper.loadImage("textures/item/ingot.png");
-			CustomColor start = new CustomColor(255, 0, 0).switchToHSV();
-			CustomColor end = new CustomColor(0, 255, 0).switchToHSV();
-			CustomColor end2 = new CustomColor(0, 0, 255).switchToHSV();
+			
+			CustomColor start = new CustomColor(61, 37, 50).switchToHSV();
+			CustomColor end = new CustomColor(246, 161, 40).switchToHSV();
+			CustomColor start2 = new CustomColor(61, 37, 50);
+			CustomColor end2 = new CustomColor(246, 161, 40);
+			
 			ColorGragient gradient = new ColorGragient(start, end);
-			ColorGragient gradient2 = new ColorGragient(start, end2);
+			ColorGragient gradient2 = new ColorGragient(start2, end2);
+			
 			BufferTexture image = new BufferTexture(16, 16);
 			BufferTexture image2 = new BufferTexture(16, 16);
+			
 			for (int x = 0; x < 16; x++) {
 				for (int y = 0; y < 16; y++) {
 					CustomColor color = TextureHelper.getFromTexture(stoneTex, x, y);
