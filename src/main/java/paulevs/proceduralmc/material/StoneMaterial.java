@@ -23,7 +23,7 @@ import paulevs.proceduralmc.block.BaseWallBlock;
 import paulevs.proceduralmc.namegen.NameGenerator;
 import paulevs.proceduralmc.recipe.GridRecipe;
 import paulevs.proceduralmc.texturing.BufferTexture;
-import paulevs.proceduralmc.texturing.ColorGragient;
+import paulevs.proceduralmc.texturing.ColorGradient;
 import paulevs.proceduralmc.texturing.CustomColor;
 import paulevs.proceduralmc.utils.ModelHelper;
 import paulevs.proceduralmc.utils.TagHelper;
@@ -108,7 +108,7 @@ public class StoneMaterial extends ComplexMaterial {
 		float b = random.nextFloat() * 0.5F + 0.25F;
 		CustomColor color = new CustomColor(r, g, b);
 		
-		ColorGragient gradient = TextureHelper.makeSoftPalette(color);
+		ColorGradient gradient = TextureHelper.makeSoftPalette(color);
 		BufferTexture texture = TextureHelper.makeNoiseTexture(random);
 		BufferTexture noise = TextureHelper.makeNoiseTexture(random, 1F);
 		TextureHelper.blend(texture, noise, 0.3F);

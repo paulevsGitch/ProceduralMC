@@ -18,10 +18,9 @@ import paulevs.proceduralmc.material.ComplexMaterial;
 import paulevs.proceduralmc.material.StoneMaterial;
 import paulevs.proceduralmc.namegen.NameGenerator;
 import paulevs.proceduralmc.texturing.BufferTexture;
-import paulevs.proceduralmc.texturing.ColorGragient;
+import paulevs.proceduralmc.texturing.ColorGradient;
 import paulevs.proceduralmc.texturing.CustomColor;
 import paulevs.proceduralmc.utils.ModelHelper;
-import paulevs.proceduralmc.utils.SilentWorldReloader;
 import paulevs.proceduralmc.utils.TagHelper;
 import paulevs.proceduralmc.utils.TextureHelper;
 
@@ -50,12 +49,18 @@ public class ProceduralMC implements ModInitializer {
 	
 	public static void onServerStart(ServerWorld world) {
 		if (register && seed != world.getSeed()) {
+			System.out.println("Start new generator!");
+			
 			register = false;
 			seed = world.getSeed();
 			
 			InnerRegistry.clearRegistries();
 			TagHelper.clearTags();
 			StoneMaterial.resetMaterials();
+			
+			if (isClient()) {
+				ModelHelper.clearModels();
+			}
 			
 			RANDOM.setSeed(seed);
 			List<ComplexMaterial> materials = Lists.newArrayList();
@@ -77,8 +82,8 @@ public class ProceduralMC implements ModInitializer {
 			CustomColor start2 = new CustomColor(61, 37, 50);
 			CustomColor end2 = new CustomColor(246, 161, 40);
 			
-			ColorGragient gradient = new ColorGragient(start, end);
-			ColorGragient gradient2 = new ColorGragient(start2, end2);
+			ColorGradient gradient = new ColorGradient(start, end);
+			ColorGradient gradient2 = new ColorGradient(start2, end2);
 			
 			BufferTexture image = new BufferTexture(16, 16);
 			BufferTexture image2 = new BufferTexture(16, 16);
@@ -100,19 +105,18 @@ public class ProceduralMC implements ModInitializer {
 			
 			RANDOM.setSeed(seed);
 			if (isClient()) {
-				ModelHelper.clearModels();
-				
 				materials.forEach((material) -> {
 					material.initClient(RANDOM);
 				});
 				
-				//SilentWorldReloader.setSilent();
+				MinecraftClient.getInstance().getItemRenderer().getModels().reloadModels();
 				MinecraftClient.getInstance().reloadResources();
 			}
 		}
 	}
 	
 	public static void onServerStop() {
+		System.out.println("Stop!");
 		register = true;
 	}
 }

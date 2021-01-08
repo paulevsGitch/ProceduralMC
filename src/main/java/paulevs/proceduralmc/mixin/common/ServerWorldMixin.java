@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ProgressListener;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -26,10 +25,5 @@ public class ServerWorldMixin {
 	@Inject(method = "<init>*", at = @At("TAIL"))
 	private void procmcInit(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean debugWorld, long l, List<Spawner> list, boolean bl, CallbackInfo info) {
 		ProceduralMC.onServerStart((ServerWorld) (Object) this);
-	}
-	
-	@Inject(method = "save", at = @At("TAIL"))
-	public void procmcSave(ProgressListener progressListener, boolean flush, boolean bl, CallbackInfo info) {
-		ProceduralMC.onServerStop();
 	}
 }

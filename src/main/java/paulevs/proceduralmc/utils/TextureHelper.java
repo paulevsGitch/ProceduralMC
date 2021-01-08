@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import paulevs.proceduralmc.ProceduralMC;
 import paulevs.proceduralmc.noise.OpenSimplexNoise;
 import paulevs.proceduralmc.texturing.BufferTexture;
-import paulevs.proceduralmc.texturing.ColorGragient;
+import paulevs.proceduralmc.texturing.ColorGradient;
 import paulevs.proceduralmc.texturing.CustomColor;
 
 public class TextureHelper {
@@ -164,7 +164,7 @@ public class TextureHelper {
 		return texture;
 	}
 	
-	public static BufferTexture applyGragient(BufferTexture texture, ColorGragient gradient) {
+	public static BufferTexture applyGragient(BufferTexture texture, ColorGradient gradient) {
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(texture.getPixel(x, y));
@@ -174,7 +174,7 @@ public class TextureHelper {
 		return texture;
 	}
 
-	public static ColorGragient makeSoftPalette(CustomColor color) {
+	public static ColorGradient makeSoftPalette(CustomColor color) {
 		CustomColor colorStart = new CustomColor().set(color).switchToHSV();
 		
 		colorStart
@@ -188,6 +188,6 @@ public class TextureHelper {
 		.setSaturation(colorEnd.getSaturation() * 0.5F)
 		.setBrightness(colorEnd.getBrightness() + 0.3F);
 		
-		return new ColorGragient(colorStart, colorEnd);
+		return new ColorGradient(colorStart, colorEnd);
 	}
 }

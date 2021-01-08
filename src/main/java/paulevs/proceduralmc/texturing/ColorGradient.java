@@ -1,11 +1,11 @@
 package paulevs.proceduralmc.texturing;
 
-public class ColorGragient {
+public class ColorGradient {
 	private static final CustomColor VALUE = new CustomColor();
 	private final CustomColor start;
 	private final CustomColor end;
 	
-	public ColorGragient(CustomColor start, CustomColor end) {
+	public ColorGradient(CustomColor start, CustomColor end) {
 		this.start = start;
 		this.end = end;
 	}

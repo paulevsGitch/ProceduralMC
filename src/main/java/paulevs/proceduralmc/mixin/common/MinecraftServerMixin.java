@@ -18,10 +18,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import paulevs.proceduralmc.ProceduralMC;
 import paulevs.proceduralmc.recipe.CustomRecipeManager;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin {
+public class MinecraftServerMixin<S extends MinecraftServer> {
 	@Shadow
 	private ServerResourceManager serverResourceManager;
 	
@@ -44,5 +45,10 @@ public class MinecraftServerMixin {
 			RecipeManagerAccessor accessor = (RecipeManagerAccessor) serverResourceManager.getRecipeManager();
 			accessor.setRecipes(CustomRecipeManager.getMap(accessor.getRecipes()));
 		}
+	}
+	
+	@Inject(method = "exit", at = @At(value = "RETURN"), cancellable = true)
+	private void procmcOnExit(CallbackInfo info) {
+		ProceduralMC.onServerStop();
 	}
 }
