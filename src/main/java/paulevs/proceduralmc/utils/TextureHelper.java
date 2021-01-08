@@ -1,12 +1,14 @@
 package paulevs.proceduralmc.utils;
 
 import java.io.IOException;
+import java.util.Random;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import paulevs.proceduralmc.ProceduralMC;
+import paulevs.proceduralmc.texturing.BufferTexture;
 import paulevs.proceduralmc.texturing.CustomColor;
 
 public class TextureHelper {
@@ -71,5 +73,11 @@ public class TextureHelper {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static BufferTexture makeNoiseTexture(Random random) {
+		BufferTexture texture = new BufferTexture(16, 16);
+		
+		return texture;
 	}
 }

@@ -7,10 +7,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
+import paulevs.proceduralmc.CreativeTabs;
 import paulevs.proceduralmc.InnerRegistry;
 import paulevs.proceduralmc.ProceduralMC;
 import paulevs.proceduralmc.block.BaseBlock;
@@ -53,20 +53,20 @@ public class StoneMaterial extends ComplexMaterial {
 		name = name.toLowerCase();
 		FabricBlockSettings material = FabricBlockSettings.copyOf(Blocks.STONE).materialColor(MaterialColor.GRAY);
 		
-		stone = InnerRegistry.registerBlockAndItem(name, new BaseBlock(material), ItemGroup.BUILDING_BLOCKS);
-		polished = InnerRegistry.registerBlockAndItem(name + "_polished", new BaseBlock(material), ItemGroup.BUILDING_BLOCKS);
-		tiles = InnerRegistry.registerBlockAndItem(name + "_tiles", new BaseBlock(material), ItemGroup.BUILDING_BLOCKS);
-		pillar = InnerRegistry.registerBlockAndItem(name + "_pillar", new BasePillarBlock(material), ItemGroup.BUILDING_BLOCKS);
-		stairs = InnerRegistry.registerBlockAndItem(name + "_stairs", new BaseStairsBlock(stone), ItemGroup.BUILDING_BLOCKS);
-		slab = InnerRegistry.registerBlockAndItem(name + "_slab", new BaseSlabBlock(stone), ItemGroup.BUILDING_BLOCKS);
-		wall = InnerRegistry.registerBlockAndItem(name + "_wall", new BaseWallBlock(stone), ItemGroup.BUILDING_BLOCKS);
-		button = InnerRegistry.registerBlockAndItem(name + "_button", new BaseStoneButtonBlock(stone), ItemGroup.BUILDING_BLOCKS);
-		pressure_plate = InnerRegistry.registerBlockAndItem(name + "_plate", new BaseStonelateBlock(stone), ItemGroup.BUILDING_BLOCKS);
+		stone = InnerRegistry.registerBlockAndItem(name, new BaseBlock(material), CreativeTabs.BLOCKS);
+		polished = InnerRegistry.registerBlockAndItem(name + "_polished", new BaseBlock(material), CreativeTabs.BLOCKS);
+		tiles = InnerRegistry.registerBlockAndItem(name + "_tiles", new BaseBlock(material), CreativeTabs.BLOCKS);
+		pillar = InnerRegistry.registerBlockAndItem(name + "_pillar", new BasePillarBlock(material), CreativeTabs.BLOCKS);
+		stairs = InnerRegistry.registerBlockAndItem(name + "_stairs", new BaseStairsBlock(stone), CreativeTabs.BLOCKS);
+		slab = InnerRegistry.registerBlockAndItem(name + "_slab", new BaseSlabBlock(stone), CreativeTabs.BLOCKS);
+		wall = InnerRegistry.registerBlockAndItem(name + "_wall", new BaseWallBlock(stone), CreativeTabs.BLOCKS);
+		button = InnerRegistry.registerBlockAndItem(name + "_button", new BaseStoneButtonBlock(stone), CreativeTabs.BLOCKS);
+		pressure_plate = InnerRegistry.registerBlockAndItem(name + "_plate", new BaseStonelateBlock(stone), CreativeTabs.BLOCKS);
 		
-		bricks = InnerRegistry.registerBlockAndItem(name + "_bricks", new BaseBlock(material), ItemGroup.BUILDING_BLOCKS);
-		brick_stairs = InnerRegistry.registerBlockAndItem(name + "_bricks_stairs", new BaseStairsBlock(bricks), ItemGroup.BUILDING_BLOCKS);
-		brick_slab = InnerRegistry.registerBlockAndItem(name + "_bricks_slab", new BaseSlabBlock(bricks), ItemGroup.BUILDING_BLOCKS);
-		brick_wall = InnerRegistry.registerBlockAndItem(name + "_bricks_wall", new BaseWallBlock(bricks), ItemGroup.BUILDING_BLOCKS);
+		bricks = InnerRegistry.registerBlockAndItem(name + "_bricks", new BaseBlock(material), CreativeTabs.BLOCKS);
+		brick_stairs = InnerRegistry.registerBlockAndItem(name + "_bricks_stairs", new BaseStairsBlock(bricks), CreativeTabs.BLOCKS);
+		brick_slab = InnerRegistry.registerBlockAndItem(name + "_bricks_slab", new BaseSlabBlock(bricks), CreativeTabs.BLOCKS);
+		brick_wall = InnerRegistry.registerBlockAndItem(name + "_bricks_wall", new BaseWallBlock(bricks), CreativeTabs.BLOCKS);
 		
 		// Recipes //
 		GridRecipe.make(name + "_bricks", bricks).setOutputCount(4).setShape("##", "##").addMaterial('#', stone).setGroup("end_bricks").build();

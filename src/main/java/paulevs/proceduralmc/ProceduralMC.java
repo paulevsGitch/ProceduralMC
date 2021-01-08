@@ -14,7 +14,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Settings;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import paulevs.proceduralmc.material.ComplexMaterial;
@@ -65,8 +64,8 @@ public class ProceduralMC implements ModInitializer {
 				materials.add(material);
 			}
 			
-			Item item = InnerRegistry.registerItem(makeID("test_hue1"), new Item(new Settings().group(ItemGroup.MATERIALS)));
-			Item item2 = InnerRegistry.registerItem(makeID("test_hue2"), new Item(new Settings().group(ItemGroup.MATERIALS)));
+			Item item = InnerRegistry.registerItem(makeID("test_hue1"), new Item(new Settings().group(CreativeTabs.ITEMS)));
+			Item item2 = InnerRegistry.registerItem(makeID("test_hue2"), new Item(new Settings().group(CreativeTabs.ITEMS)));
 			Identifier texture = TextureHelper.makeItemTextureID("test_hue1");
 			Identifier texture2 = TextureHelper.makeItemTextureID("test_hue2");
 			
