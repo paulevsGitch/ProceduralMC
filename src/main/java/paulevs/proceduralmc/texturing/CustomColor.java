@@ -88,16 +88,20 @@ public class CustomColor {
 	
 	public CustomColor mixWith(CustomColor color, float blend) {
 		if (hsvMode) {
-			/*float maxCCW = color.x - this.x;
-			float maxCW = (this.x + 1F) - color.x;
-			if (maxCCW > maxCW) {
-				this.x = MathHelper.lerp(blend, this.x, color.x) % 1.0F;
+			if (Math.abs(this.x - color.x) > 0.5F) {
+				float x1 = this.x;
+				float x2 = color.x;
+				if (x2 > x1) {
+					x1 += 1;
+				}
+				else {
+					x2 += 1;
+				}
+				this.x = MHelper.wrap(MathHelper.lerp(blend, x1, x2), 1);
 			}
 			else {
-				this.x = MathHelper.lerp(blend, color.x, this.x) % 1.0F;
-			}*/
-			// Need better code for circle lerp
-			this.x = MHelper.wrap(MathHelper.lerp(blend, this.x, color.x), 1);
+				this.x = MathHelper.lerp(blend, this.x, color.x);
+			}
 		}
 		else {
 			this.x = MathHelper.lerp(blend, this.x, color.x);
