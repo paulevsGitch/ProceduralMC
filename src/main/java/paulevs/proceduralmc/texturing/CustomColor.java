@@ -61,6 +61,13 @@ public class CustomColor {
 		return this;
 	}
 	
+	public CustomColor set(float r, float g, float b) {
+		this.x = r;
+		this.y = g;
+		this.z = b;
+		return this;
+	}
+	
 	public CustomColor set(float r, float g, float b, float a) {
 		this.x = r;
 		this.y = g;

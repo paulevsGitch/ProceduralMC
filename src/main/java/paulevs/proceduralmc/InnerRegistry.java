@@ -20,10 +20,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
-import paulevs.proceduralmc.material.StoneMaterial;
 import paulevs.proceduralmc.texturing.BufferTexture;
 import paulevs.proceduralmc.utils.ChangeableRegistry;
-import paulevs.proceduralmc.utils.ModelHelper;
 
 public class InnerRegistry {
 	private static final Map<BlockState, UnbakedModel> BLOCK_MODELS = Maps.newHashMap();
@@ -43,9 +41,6 @@ public class InnerRegistry {
 		TEXTURES.clear();
 		BLOCKS.clear();
 		MODELED.clear();
-		
-		ModelHelper.MODELS.clear();
-		StoneMaterial.resetMaterials();
 	}
 	
 	private static void clearRegistry(DefaultedRegistry<?> registry, Set<Identifier> ids) {

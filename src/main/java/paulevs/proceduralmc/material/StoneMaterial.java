@@ -23,6 +23,7 @@ import paulevs.proceduralmc.block.BaseWallBlock;
 import paulevs.proceduralmc.namegen.NameGenerator;
 import paulevs.proceduralmc.recipe.GridRecipe;
 import paulevs.proceduralmc.texturing.BufferTexture;
+import paulevs.proceduralmc.texturing.ColorGragient;
 import paulevs.proceduralmc.texturing.CustomColor;
 import paulevs.proceduralmc.utils.ModelHelper;
 import paulevs.proceduralmc.utils.TagHelper;
@@ -47,43 +48,43 @@ public class StoneMaterial extends ComplexMaterial {
 	
 	public final String name;
 	
-	public StoneMaterial(String name, Random random) {
+	public StoneMaterial(Random random) {
 		super(random);
-		this.name = name;
-		name = name.toLowerCase();
+		this.name = NameGenerator.makeRockName(random);
+		String regName = this.name.toLowerCase();
 		FabricBlockSettings material = FabricBlockSettings.copyOf(Blocks.STONE).materialColor(MaterialColor.GRAY);
 		
-		stone = InnerRegistry.registerBlockAndItem(name, new BaseBlock(material), CreativeTabs.BLOCKS);
-		polished = InnerRegistry.registerBlockAndItem(name + "_polished", new BaseBlock(material), CreativeTabs.BLOCKS);
-		tiles = InnerRegistry.registerBlockAndItem(name + "_tiles", new BaseBlock(material), CreativeTabs.BLOCKS);
-		pillar = InnerRegistry.registerBlockAndItem(name + "_pillar", new BasePillarBlock(material), CreativeTabs.BLOCKS);
-		stairs = InnerRegistry.registerBlockAndItem(name + "_stairs", new BaseStairsBlock(stone), CreativeTabs.BLOCKS);
-		slab = InnerRegistry.registerBlockAndItem(name + "_slab", new BaseSlabBlock(stone), CreativeTabs.BLOCKS);
-		wall = InnerRegistry.registerBlockAndItem(name + "_wall", new BaseWallBlock(stone), CreativeTabs.BLOCKS);
-		button = InnerRegistry.registerBlockAndItem(name + "_button", new BaseStoneButtonBlock(stone), CreativeTabs.BLOCKS);
-		pressure_plate = InnerRegistry.registerBlockAndItem(name + "_plate", new BaseStonelateBlock(stone), CreativeTabs.BLOCKS);
+		stone = InnerRegistry.registerBlockAndItem(regName, new BaseBlock(material), CreativeTabs.BLOCKS);
+		polished = InnerRegistry.registerBlockAndItem(regName + "_polished", new BaseBlock(material), CreativeTabs.BLOCKS);
+		tiles = InnerRegistry.registerBlockAndItem(regName + "_tiles", new BaseBlock(material), CreativeTabs.BLOCKS);
+		pillar = InnerRegistry.registerBlockAndItem(regName + "_pillar", new BasePillarBlock(material), CreativeTabs.BLOCKS);
+		stairs = InnerRegistry.registerBlockAndItem(regName + "_stairs", new BaseStairsBlock(stone), CreativeTabs.BLOCKS);
+		slab = InnerRegistry.registerBlockAndItem(regName + "_slab", new BaseSlabBlock(stone), CreativeTabs.BLOCKS);
+		wall = InnerRegistry.registerBlockAndItem(regName + "_wall", new BaseWallBlock(stone), CreativeTabs.BLOCKS);
+		button = InnerRegistry.registerBlockAndItem(regName + "_button", new BaseStoneButtonBlock(stone), CreativeTabs.BLOCKS);
+		pressure_plate = InnerRegistry.registerBlockAndItem(regName + "_plate", new BaseStonelateBlock(stone), CreativeTabs.BLOCKS);
 		
-		bricks = InnerRegistry.registerBlockAndItem(name + "_bricks", new BaseBlock(material), CreativeTabs.BLOCKS);
-		brick_stairs = InnerRegistry.registerBlockAndItem(name + "_bricks_stairs", new BaseStairsBlock(bricks), CreativeTabs.BLOCKS);
-		brick_slab = InnerRegistry.registerBlockAndItem(name + "_bricks_slab", new BaseSlabBlock(bricks), CreativeTabs.BLOCKS);
-		brick_wall = InnerRegistry.registerBlockAndItem(name + "_bricks_wall", new BaseWallBlock(bricks), CreativeTabs.BLOCKS);
+		bricks = InnerRegistry.registerBlockAndItem(regName + "_bricks", new BaseBlock(material), CreativeTabs.BLOCKS);
+		brick_stairs = InnerRegistry.registerBlockAndItem(regName + "_bricks_stairs", new BaseStairsBlock(bricks), CreativeTabs.BLOCKS);
+		brick_slab = InnerRegistry.registerBlockAndItem(regName + "_bricks_slab", new BaseSlabBlock(bricks), CreativeTabs.BLOCKS);
+		brick_wall = InnerRegistry.registerBlockAndItem(regName + "_bricks_wall", new BaseWallBlock(bricks), CreativeTabs.BLOCKS);
 		
 		// Recipes //
-		GridRecipe.make(name + "_bricks", bricks).setOutputCount(4).setShape("##", "##").addMaterial('#', stone).setGroup("end_bricks").build();
-		GridRecipe.make(name + "_polished", polished).setOutputCount(4).setShape("##", "##").addMaterial('#', bricks).setGroup("end_tile").build();
-		GridRecipe.make(name + "_tiles", tiles).setOutputCount(4).setShape("##", "##").addMaterial('#', polished).setGroup("end_small_tile").build();
-		GridRecipe.make(name + "_pillar", pillar).setShape("#", "#").addMaterial('#', slab).setGroup("end_pillar").build();
+		GridRecipe.make(regName + "_bricks", bricks).setOutputCount(4).setShape("##", "##").addMaterial('#', stone).setGroup("end_bricks").build();
+		GridRecipe.make(regName + "_polished", polished).setOutputCount(4).setShape("##", "##").addMaterial('#', bricks).setGroup("end_tile").build();
+		GridRecipe.make(regName + "_tiles", tiles).setOutputCount(4).setShape("##", "##").addMaterial('#', polished).setGroup("end_small_tile").build();
+		GridRecipe.make(regName + "_pillar", pillar).setShape("#", "#").addMaterial('#', slab).setGroup("end_pillar").build();
 		
-		GridRecipe.make(name + "_stairs", stairs).setOutputCount(4).setShape("#  ", "## ", "###").addMaterial('#', stone).setGroup("end_stone_stairs").build();
-		GridRecipe.make(name + "_slab", slab).setOutputCount(6).setShape("###").addMaterial('#', stone).setGroup("end_stone_slabs").build();
-		GridRecipe.make(name + "_bricks_stairs", brick_stairs).setOutputCount(4).setShape("#  ", "## ", "###").addMaterial('#', bricks).setGroup("end_stone_stairs").build();
-		GridRecipe.make(name + "_bricks_slab", brick_slab).setOutputCount(6).setShape("###").addMaterial('#', bricks).setGroup("end_stone_slabs").build();
+		GridRecipe.make(regName + "_stairs", stairs).setOutputCount(4).setShape("#  ", "## ", "###").addMaterial('#', stone).setGroup("end_stone_stairs").build();
+		GridRecipe.make(regName + "_slab", slab).setOutputCount(6).setShape("###").addMaterial('#', stone).setGroup("end_stone_slabs").build();
+		GridRecipe.make(regName + "_bricks_stairs", brick_stairs).setOutputCount(4).setShape("#  ", "## ", "###").addMaterial('#', bricks).setGroup("end_stone_stairs").build();
+		GridRecipe.make(regName + "_bricks_slab", brick_slab).setOutputCount(6).setShape("###").addMaterial('#', bricks).setGroup("end_stone_slabs").build();
 		
-		GridRecipe.make(name + "_wall", wall).setOutputCount(6).setShape("###", "###").addMaterial('#', stone).setGroup("end_wall").build();
-		GridRecipe.make(name + "_bricks_wall", brick_wall).setOutputCount(6).setShape("###", "###").addMaterial('#', bricks).setGroup("end_wall").build();
+		GridRecipe.make(regName + "_wall", wall).setOutputCount(6).setShape("###", "###").addMaterial('#', stone).setGroup("end_wall").build();
+		GridRecipe.make(regName + "_bricks_wall", brick_wall).setOutputCount(6).setShape("###", "###").addMaterial('#', bricks).setGroup("end_wall").build();
 		
-		GridRecipe.make(name + "_button", button).setList("#").addMaterial('#', stone).setGroup("end_stone_buttons").build();
-		GridRecipe.make(name + "_pressure_plate", pressure_plate).setShape("##").addMaterial('#', stone).setGroup("end_stone_plates").build();
+		GridRecipe.make(regName + "_button", button).setList("#").addMaterial('#', stone).setGroup("end_stone_buttons").build();
+		GridRecipe.make(regName + "_pressure_plate", pressure_plate).setShape("##").addMaterial('#', stone).setGroup("end_stone_plates").build();
 		
 		// Item Tags //
 		TagHelper.addTag(ItemTags.SLABS, slab, brick_slab);
@@ -100,16 +101,19 @@ public class StoneMaterial extends ComplexMaterial {
 	
 	@Override
 	public void initClient(Random random) {
-		NativeImage stoneTex = TextureHelper.loadImage("minecraft", "textures/block/stone.png");
 		NativeImage cobblTex = TextureHelper.loadImage("minecraft", "textures/block/cobblestone.png");
 		
-		BufferTexture texture = new BufferTexture(16, 16);
-		for (int x = 0; x < 16; x++) {
-			for (int y = 0; y < 16; y++) {
-				CustomColor color = TextureHelper.getFromTexture(stoneTex, x, y);
-				texture.setPixel(x, y, color);
-			}
-		}
+		float r = random.nextFloat() * 0.5F + 0.25F;
+		float g = random.nextFloat() * 0.5F + 0.25F;
+		float b = random.nextFloat() * 0.5F + 0.25F;
+		CustomColor color = new CustomColor(r, g, b);
+		
+		ColorGragient gradient = TextureHelper.makeSoftPalette(color);
+		BufferTexture texture = TextureHelper.makeNoiseTexture(random);
+		BufferTexture noise = TextureHelper.makeNoiseTexture(random, 1F);
+		TextureHelper.blend(texture, noise, 0.3F);
+		TextureHelper.clamp(texture, 5);
+		TextureHelper.applyGragient(texture, gradient);
 		
 		String textureBaseName = name.toLowerCase();
 		String mainName = ProceduralMC.MOD_ID + "." + textureBaseName;
@@ -119,7 +123,7 @@ public class StoneMaterial extends ComplexMaterial {
 		texture = new BufferTexture(16, 16);
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
-				CustomColor color = TextureHelper.getFromTexture(cobblTex, x, y);
+				color = TextureHelper.getFromTexture(cobblTex, x, y);
 				texture.setPixel(x, y, color);
 			}
 		}

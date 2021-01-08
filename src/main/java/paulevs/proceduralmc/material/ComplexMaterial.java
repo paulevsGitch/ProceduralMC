@@ -8,7 +8,9 @@ import com.google.common.collect.Lists;
 public abstract class ComplexMaterial {
 	private static final List<ComplexMaterial> MATERIALS = Lists.newArrayList();
 	
-	public ComplexMaterial(Random random) {}
+	public ComplexMaterial(Random random) {
+		MATERIALS.add(this);
+	}
 	
 	public abstract void initClient(Random random);
 	

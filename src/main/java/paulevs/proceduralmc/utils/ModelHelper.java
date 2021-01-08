@@ -21,6 +21,10 @@ import paulevs.proceduralmc.InnerRegistry;
 public class ModelHelper {
 	public static final Map<Item, ModelIdentifier> MODELS = Maps.newHashMap();
 	
+	public static void clearModels() {
+		MODELS.clear();
+	}
+	
 	public static String makeCube(Identifier texture) {
 		return String.format("{\"parent\": \"minecraft:block/cube_all\", \"textures\": {\"all\": \"%s:%s\"}}", texture.getNamespace(), texture.getPath());
 	}

@@ -17,6 +17,11 @@ public class TagHelper {
 	private static final Map<Identifier, Set<Identifier>> TAGS_BLOCK = Maps.newHashMap();
 	private static final Map<Identifier, Set<Identifier>> TAGS_ITEM = Maps.newHashMap();
 	
+	public static void clearTags() {
+		TAGS_BLOCK.clear();
+		TAGS_ITEM.clear();
+	}
+	
 	public static void addTag(Tag.Identified<Block> tag, Block... blocks) {
 		Identifier tagID = tag.getId();
 		Set<Identifier> set = TAGS_BLOCK.get(tagID);

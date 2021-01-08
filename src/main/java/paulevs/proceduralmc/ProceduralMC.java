@@ -2,10 +2,8 @@ package paulevs.proceduralmc;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -24,12 +22,14 @@ import paulevs.proceduralmc.texturing.ColorGragient;
 import paulevs.proceduralmc.texturing.CustomColor;
 import paulevs.proceduralmc.utils.ModelHelper;
 import paulevs.proceduralmc.utils.SilentWorldReloader;
+import paulevs.proceduralmc.utils.TagHelper;
 import paulevs.proceduralmc.utils.TextureHelper;
 
 public class ProceduralMC implements ModInitializer {
 	public static final String MOD_ID = "proceduralmc";
 	private static final Random RANDOM = new Random();
 	private static boolean register = true;
+	private static long seed = Long.MIN_VALUE;
 	
 	@Override
 	public void onInitialize() {
@@ -49,18 +49,19 @@ public class ProceduralMC implements ModInitializer {
 	}
 	
 	public static void onServerStart(ServerWorld world) {
-		if (register) {
+		if (register && seed != world.getSeed()) {
 			register = false;
+			seed = world.getSeed();
 			
 			InnerRegistry.clearRegistries();
+			TagHelper.clearTags();
+			StoneMaterial.resetMaterials();
 			
-			RANDOM.setSeed(world.getSeed());
+			RANDOM.setSeed(seed);
 			List<ComplexMaterial> materials = Lists.newArrayList();
 			
-			Set<String> names = Sets.newHashSet();
-			for (int i = 0; i < 1; i++) {
-				String name = NameGenerator.makeOreName(RANDOM, names);
-				StoneMaterial material = new StoneMaterial(name, RANDOM);
+			for (int i = 0; i < 10; i++) {
+				StoneMaterial material = new StoneMaterial(RANDOM);
 				materials.add(material);
 			}
 			
@@ -95,8 +96,10 @@ public class ProceduralMC implements ModInitializer {
 			InnerRegistry.registerItemModel(item, ModelHelper.makeFlatItem(texture));
 			InnerRegistry.registerItemModel(item2, ModelHelper.makeFlatItem(texture2));
 			
-			RANDOM.setSeed(world.getSeed());
+			RANDOM.setSeed(seed);
 			if (isClient()) {
+				ModelHelper.clearModels();
+				
 				materials.forEach((material) -> {
 					material.initClient(RANDOM);
 				});

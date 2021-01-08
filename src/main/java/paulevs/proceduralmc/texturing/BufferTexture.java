@@ -23,6 +23,10 @@ public class BufferTexture {
 		buffer[y * width + x] = color.getAsInt();
 	}
 	
+	public int getPixel(int x, int y) {
+		return buffer[y * width + x];
+	}
+	
 	public NativeImage makeImage() {
 		NativeImage img = TextureHelper.makeTexture(width, height);
 		for (int i = 0; i < buffer.length; i++) {
