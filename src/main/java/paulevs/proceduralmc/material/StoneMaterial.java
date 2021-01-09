@@ -20,11 +20,17 @@ import paulevs.proceduralmc.utils.ModelHelper;
 import paulevs.proceduralmc.utils.TextureHelper;
 
 public class StoneMaterial extends ComplexMaterial {
+	private static BufferTexture stoneFrame;
+	private static BufferTexture stoneBricks;
+	private static BufferTexture stoneTiles;
+	
 	public final Block stone;
 	
-	/*public final Block polished;
+	public final Block polished;
+	public final Block bricks;
 	public final Block tiles;
-	public final Block pillar;
+	
+	/*public final Block pillar;
 	public final Block stairs;
 	public final Block slab;
 	public final Block wall;
@@ -45,16 +51,18 @@ public class StoneMaterial extends ComplexMaterial {
 		FabricBlockSettings material = FabricBlockSettings.copyOf(Blocks.STONE).materialColor(MaterialColor.GRAY);
 		
 		stone = InnerRegistry.registerBlockAndItem(regName, new BaseBlock(material), CreativeTabs.BLOCKS);
-		/*polished = InnerRegistry.registerBlockAndItem(regName + "_polished", new BaseBlock(material), CreativeTabs.BLOCKS);
+		polished = InnerRegistry.registerBlockAndItem(regName + "_polished", new BaseBlock(material), CreativeTabs.BLOCKS);
 		tiles = InnerRegistry.registerBlockAndItem(regName + "_tiles", new BaseBlock(material), CreativeTabs.BLOCKS);
-		pillar = InnerRegistry.registerBlockAndItem(regName + "_pillar", new BasePillarBlock(material), CreativeTabs.BLOCKS);
+		bricks = InnerRegistry.registerBlockAndItem(regName + "_bricks", new BaseBlock(material), CreativeTabs.BLOCKS);
+		
+		/*pillar = InnerRegistry.registerBlockAndItem(regName + "_pillar", new BasePillarBlock(material), CreativeTabs.BLOCKS);
 		stairs = InnerRegistry.registerBlockAndItem(regName + "_stairs", new BaseStairsBlock(stone), CreativeTabs.BLOCKS);
 		slab = InnerRegistry.registerBlockAndItem(regName + "_slab", new BaseSlabBlock(stone), CreativeTabs.BLOCKS);
 		wall = InnerRegistry.registerBlockAndItem(regName + "_wall", new BaseWallBlock(stone), CreativeTabs.BLOCKS);
 		button = InnerRegistry.registerBlockAndItem(regName + "_button", new BaseStoneButtonBlock(stone), CreativeTabs.BLOCKS);
 		pressure_plate = InnerRegistry.registerBlockAndItem(regName + "_plate", new BaseStonelateBlock(stone), CreativeTabs.BLOCKS);
 		
-		bricks = InnerRegistry.registerBlockAndItem(regName + "_bricks", new BaseBlock(material), CreativeTabs.BLOCKS);
+		
 		brick_stairs = InnerRegistry.registerBlockAndItem(regName + "_bricks_stairs", new BaseStairsBlock(bricks), CreativeTabs.BLOCKS);
 		brick_slab = InnerRegistry.registerBlockAndItem(regName + "_bricks_slab", new BaseSlabBlock(bricks), CreativeTabs.BLOCKS);
 		brick_wall = InnerRegistry.registerBlockAndItem(regName + "_bricks_wall", new BaseWallBlock(bricks), CreativeTabs.BLOCKS);*/
@@ -91,31 +99,55 @@ public class StoneMaterial extends ComplexMaterial {
 	
 	@Override
 	public void initClient(Random random) {
+		loadStaticImages();
+		
 		String textureBaseName = name.toLowerCase();
 		String mainName = ProceduralMC.MOD_ID + "." + textureBaseName;
 		
+		// Texture Genearation
 		CustomColor mainColor = new CustomColor(random.nextFloat(), random.nextFloat(), random.nextFloat());
 		ColorGradient palette = ProceduralTextures.makeStonePalette(mainColor, random);
+		
+		Identifier stoneTexID = TextureHelper.makeBlockTextureID(textureBaseName);
 		BufferTexture texture = ProceduralTextures.makeStoneTexture(palette, random);
-		Identifier stoneTextureID = TextureHelper.makeBlockTextureID(textureBaseName);
-		InnerRegistry.registerTexture(stoneTextureID, texture);
+		InnerRegistry.registerTexture(stoneTexID, texture);
 		
-		Identifier pillarTopTexID = TextureHelper.makeBlockTextureID(textureBaseName + "_pillar_top");
-		InnerRegistry.registerTexture(pillarTopTexID, texture);
+		texture = ProceduralTextures.makeBluredTexture(texture);
 		
-		ModelHelper.registerRotatedBlockModel(stone, stoneTextureID);
+		BufferTexture variant = ProceduralTextures.coverWithOverlay(texture, stoneFrame, palette);
+		Identifier frameTexID = TextureHelper.makeBlockTextureID(textureBaseName + "_frame");
+		InnerRegistry.registerTexture(frameTexID, variant);
+		
+		variant = ProceduralTextures.coverWithOverlay(texture, stoneBricks, palette);
+		Identifier bricksTexID = TextureHelper.makeBlockTextureID(textureBaseName + "_bricks");
+		InnerRegistry.registerTexture(bricksTexID, variant);
+		
+		variant = ProceduralTextures.coverWithOverlay(texture, stoneTiles, palette);
+		Identifier tilesTexID = TextureHelper.makeBlockTextureID(textureBaseName + "_tiles");
+		InnerRegistry.registerTexture(tilesTexID, variant);
+		
+		// Registering models
+		ModelHelper.registerRandMirrorBlockModel(stone, stoneTexID);
 		NameGenerator.addTranslation("block." + mainName, name);
 		
-		/*ModelHelper.registerSimpleBlockModel(polished, stoneTextureID);
+		ModelHelper.registerSimpleBlockModel(polished, frameTexID);
 		NameGenerator.addTranslation("block." + mainName + "_polished", name);
 		
-		ModelHelper.registerSimpleBlockModel(bricks, stoneTextureID);
+		ModelHelper.registerSimpleBlockModel(bricks, bricksTexID);
 		NameGenerator.addTranslation("block." + mainName + "_bricks", name);
 		
-		ModelHelper.registerSimpleBlockModel(tiles, stoneTextureID);
+		ModelHelper.registerSimpleBlockModel(tiles, tilesTexID);
 		NameGenerator.addTranslation("block." + mainName + "_tiles", name);
 		
-		ModelHelper.registerPillarBlock(pillar, pillarTopTexID, stoneTextureID);
+		/*ModelHelper.registerPillarBlock(pillar, pillarTopTexID, stoneTextureID);
 		NameGenerator.addTranslation("block." + mainName + "_pillar", name);*/
+	}
+	
+	private void loadStaticImages() {
+		if (stoneFrame == null) {
+			stoneFrame = TextureHelper.loadTexture("textures/block/stone_frame_01.png");
+			stoneBricks = TextureHelper.loadTexture("textures/block/stone_bricks_01.png");
+			stoneTiles = TextureHelper.loadTexture("textures/block/stone_tiles_01.png");
+		}
 	}
 }

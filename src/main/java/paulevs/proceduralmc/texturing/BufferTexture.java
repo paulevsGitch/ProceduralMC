@@ -1,5 +1,7 @@
 package paulevs.proceduralmc.texturing;
 
+import java.util.Arrays;
+
 import net.minecraft.client.texture.NativeImage;
 import paulevs.proceduralmc.utils.TextureHelper;
 
@@ -23,6 +25,12 @@ public class BufferTexture {
 			int y = i / width;
 			buffer[i] = image.getPixelColor(x, y);
 		}
+	}
+	
+	private BufferTexture(BufferTexture texture) {
+		this.width = texture.width;
+		this.height = texture.height;
+		buffer = Arrays.copyOf(texture.buffer, texture.buffer.length);
 	}
 	
 	public void setPixel(int x, int y, int r, int g, int b) {
@@ -54,5 +62,9 @@ public class BufferTexture {
 	
 	public int getHeight() {
 		return height;
+	}
+	
+	public BufferTexture clone() {
+		return new BufferTexture(this);
 	}
 }

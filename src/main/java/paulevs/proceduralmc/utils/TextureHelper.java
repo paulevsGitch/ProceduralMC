@@ -130,6 +130,14 @@ public class TextureHelper {
 		}
 	}
 	
+	public static BufferTexture loadTexture(String name) {
+		return new BufferTexture(loadImage(name));
+	}
+	
+	public static BufferTexture loadTexture(String namespace, String name) {
+		return new BufferTexture(loadImage(namespace, name));
+	}
+	
 	public static BufferTexture makeNoiseTexture(Random random) {
 		BufferTexture texture = new BufferTexture(16, 16);
 		OpenSimplexNoise noise = new OpenSimplexNoise(random.nextInt());
@@ -191,11 +199,45 @@ public class TextureHelper {
 		return texture;
 	}
 	
+	public static BufferTexture makeNoiseTexture(Random random, int side, float scale) {
+		BufferTexture texture = new BufferTexture(side, side);
+		OpenSimplexNoise noise = new OpenSimplexNoise(random.nextInt());
+		COLOR.setAlpha(1F);
+		for (int x = 0; x < side; x++) {
+			for (int y = 0; y < side; y++) {
+				float nx = (float) x / side;
+				float ny = (float) y / side;
+				
+				float px1 = x * scale;
+				float py1 = y * scale;
+				float px2 = (x - side) * scale;
+				float py2 = (y - side) * scale;
+				
+				float v1 = (float) noise.eval(px1, py1) * 0.5F + 0.5F;
+				float v2 = (float) noise.eval(px2, py1) * 0.5F + 0.5F;
+				float v3 = (float) noise.eval(px1, py2) * 0.5F + 0.5F;
+				float v4 = (float) noise.eval(px2, py2) * 0.5F + 0.5F;
+				
+				v1 = MathHelper.lerp(nx, v1, v2);
+				v2 = MathHelper.lerp(nx, v3, v4);
+				
+				v1 = MathHelper.lerp(ny, v1, v2);
+				COLOR.set(v1, v1, v1);
+				texture.setPixel(x, y, COLOR);
+			}
+		}
+		return texture;
+	}
+	
 	public static BufferTexture blend(BufferTexture a, BufferTexture b, float mix) {
 		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
 		for (int x = 0; x < a.getWidth(); x++) {
 			for (int y = 0; y < a.getHeight(); y++) {
-				COLOR.set(a.getPixel(x, y)).mixWith(COLOR2.set(b.getPixel(x, y)), mix);
+				COLOR.set(a.getPixel(x, y));
+				COLOR2.set(b.getPixel(x, y));
+				if (COLOR2.getAlpha() > 0 && COLOR.getAlpha() > 0) {
+					COLOR.mixWith(COLOR2, mix);
+				}
 				result.setPixel(x, y, COLOR);
 			}
 		}
@@ -375,6 +417,18 @@ public class TextureHelper {
 		return texture;
 	}
 	
+	public static BufferTexture downScale(BufferTexture texture, int scale) {
+		BufferTexture result = new BufferTexture(texture.getWidth() / scale, texture.getHeight() / scale);
+		for (int x = 0; x < result.getWidth(); x++) {
+			int px = x * scale;
+			for (int y = 0; y < result.getHeight(); y++) {
+				int py = y * scale;
+				result.setPixel(x, y, getAverageColor(texture, px, py, scale, scale));
+			}
+		}
+		return result;
+	}
+	
 	public static ColorGradient makeDistortedPalette(CustomColor color, float hueDist, float satDist, float valDist) {
 		CustomColor colorStart = new CustomColor().set(color).switchToHSV();
 		
@@ -414,9 +468,9 @@ public class TextureHelper {
 		float cg = 0;
 		float cb = 0;
 		
-		for (int px = -r; px <= r; px += 2) {
+		for (int px = -r; px <= r; px ++) {
 			int posX = MHelper.wrap(x + px, texture.getWidth());
-			for (int py = -r; py <= r; py += 2) {
+			for (int py = -r; py <= r; py ++) {
 				int posY = MHelper.wrap(y + py, texture.getHeight());
 				COLOR.set(texture.getPixel(posX, posY));
 				cr += COLOR.getRed();
@@ -427,6 +481,26 @@ public class TextureHelper {
 		
 		int count = r * 2 + 1;
 		count *= count;
+		return COLOR.set(cr / count, cg / count, cb / count);
+	}
+	
+	public static CustomColor getAverageColor(BufferTexture texture, int x, int y, int width, int height) {
+		float cr = 0;
+		float cg = 0;
+		float cb = 0;
+		
+		for (int px = 0; px < width; px ++) {
+			int posX = MHelper.wrap(x + px, texture.getWidth());
+			for (int py = 0; py < height; py ++) {
+				int posY = MHelper.wrap(y + py, texture.getHeight());
+				COLOR.set(texture.getPixel(posX, posY));
+				cr += COLOR.getRed();
+				cg += COLOR.getGreen();
+				cb += COLOR.getBlue();
+			}
+		}
+		
+		int count = width * height;
 		return COLOR.set(cr / count, cg / count, cb / count);
 	}
 	
