@@ -1,5 +1,6 @@
 package paulevs.proceduralmc.utils;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
@@ -15,6 +16,7 @@ import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction.Axis;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.registry.Registry;
 import paulevs.proceduralmc.InnerRegistry;
 
@@ -40,6 +42,27 @@ public class ModelHelper {
 	public static void registerSimpleBlockModel(Block block, Identifier texture) {
 		InnerRegistry.registerBlockModel(block, makeCube(texture));
 		InnerRegistry.registerItemModel(block.asItem(), makeCube(texture));
+	}
+	
+	public static void registerRotatedBlockModel(Block block, Identifier texture) {
+		String model = makeCube(texture);
+		Identifier modelID = Registry.BLOCK.getId(block);
+		modelID = new Identifier(modelID.getNamespace(), "block/" + modelID.getPath());
+		InnerRegistry.registerModel(modelID, model);
+		InnerRegistry.registerItemModel(block.asItem(), model);
+		
+		List<ModelVariant> variants = Lists.newArrayList();
+		for (int x = 0; x < 360; x += 90) {
+			for (int y = 0; y < 360; y += 90) {
+				for (int z = 0; z < 360; z += 90) {
+					Quaternion rotation = new Quaternion(x, y, z, true);
+					AffineTransformation transform = new AffineTransformation(null, rotation, null, null);
+					variants.add(new ModelVariant(modelID, transform, false, 1));
+				}
+			}
+		}
+		WeightedUnbakedModel wModel = new WeightedUnbakedModel(variants);
+		InnerRegistry.registerBlockModel(block.getDefaultState(), wModel);
 	}
 	
 	public static void registerPillarBlock(Block block, Identifier textureTop, Identifier textureSide) {

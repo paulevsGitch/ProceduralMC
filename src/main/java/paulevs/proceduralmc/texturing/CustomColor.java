@@ -280,4 +280,9 @@ public class CustomColor {
 		this.z = MathHelper.clamp(br, 0F, 1F);
 		return this;
 	}
+
+	@Override
+	public CustomColor clone() {
+		return new CustomColor(x, y, z, a);
+	}
 }

@@ -336,6 +336,21 @@ public class TextureHelper {
 		return result;
 	}
 	
+	public static BufferTexture sub(BufferTexture a, BufferTexture b) {
+		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
+		for (int x = 0; x < a.getWidth(); x++) {
+			for (int y = 0; y < a.getHeight(); y++) {
+				COLOR.set(a.getPixel(x, y));
+				COLOR2.set(b.getPixel(x, y));
+				float cr = COLOR.getRed() - COLOR2.getRed();
+				float cg = COLOR.getGreen() - COLOR2.getGreen();
+				float cb = COLOR.getBlue() - COLOR2.getBlue();
+				result.setPixel(x, y, COLOR.set(cr, cg, cb));
+			}
+		}
+		return result;
+	}
+	
 	public static BufferTexture offset(BufferTexture texture, int offsetX, int offsetY) {
 		BufferTexture result = new BufferTexture(texture.getWidth(), texture.getHeight());
 		for (int x = 0; x < texture.getWidth(); x++) {
@@ -345,6 +360,19 @@ public class TextureHelper {
 			}
 		}
 		return result;
+	}
+	
+	public static BufferTexture invert(BufferTexture texture) {
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(texture.getPixel(x, y));
+				COLOR.setRed(1 - COLOR.getRed());
+				COLOR.setGreen(1 - COLOR.getGreen());
+				COLOR.setBlue(1 - COLOR.getBlue());
+				texture.setPixel(x, y, COLOR);
+			}
+		}
+		return texture;
 	}
 	
 	public static ColorGradient makeDistortedPalette(CustomColor color, float hueDist, float satDist, float valDist) {
@@ -379,5 +407,41 @@ public class TextureHelper {
 		.setBrightness(colorEnd.getBrightness() + 0.3F);
 		
 		return new ColorGradient(colorStart, colorEnd);
+	}
+
+	public static CustomColor getAverageColor(BufferTexture texture, int x, int y, int r) {
+		float cr = 0;
+		float cg = 0;
+		float cb = 0;
+		
+		for (int px = -r; px <= r; px += 2) {
+			int posX = MHelper.wrap(x + px, texture.getWidth());
+			for (int py = -r; py <= r; py += 2) {
+				int posY = MHelper.wrap(y + py, texture.getHeight());
+				COLOR.set(texture.getPixel(posX, posY));
+				cr += COLOR.getRed();
+				cg += COLOR.getGreen();
+				cb += COLOR.getBlue();
+			}
+		}
+		
+		int count = r * 2 + 1;
+		count *= count;
+		return COLOR.set(cr / count, cg / count, cb / count);
+	}
+	
+	public static float fakeDispersion(BufferTexture texture) {
+		int count = 0;
+		float disp = 0;
+		for (int x = 1; x < texture.getWidth(); x += 2) {
+			for (int y = 1; y < texture.getHeight(); y += 2) {
+				COLOR.set(texture.getPixel(x, y));
+				float v1 = COLOR.switchToHSV().getBrightness();
+				float v2 = getAverageColor(texture, x, y, 1).switchToHSV().getBrightness();
+				disp += MathHelper.abs(v1 - v2);
+				count ++;
+			}
+		}
+		return disp / (float) count;
 	}
 }

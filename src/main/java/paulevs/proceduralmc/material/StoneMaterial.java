@@ -6,33 +6,23 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MaterialColor;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import paulevs.proceduralmc.CreativeTabs;
 import paulevs.proceduralmc.InnerRegistry;
 import paulevs.proceduralmc.ProceduralMC;
 import paulevs.proceduralmc.block.BaseBlock;
-import paulevs.proceduralmc.block.BasePillarBlock;
-import paulevs.proceduralmc.block.BaseSlabBlock;
-import paulevs.proceduralmc.block.BaseStairsBlock;
-import paulevs.proceduralmc.block.BaseStoneButtonBlock;
-import paulevs.proceduralmc.block.BaseStonelateBlock;
-import paulevs.proceduralmc.block.BaseWallBlock;
 import paulevs.proceduralmc.namegen.NameGenerator;
-import paulevs.proceduralmc.recipe.GridRecipe;
 import paulevs.proceduralmc.texturing.BufferTexture;
+import paulevs.proceduralmc.texturing.ColorGradient;
 import paulevs.proceduralmc.texturing.CustomColor;
 import paulevs.proceduralmc.texturing.ProceduralTextures;
 import paulevs.proceduralmc.utils.ModelHelper;
-import paulevs.proceduralmc.utils.TagHelper;
 import paulevs.proceduralmc.utils.TextureHelper;
 
 public class StoneMaterial extends ComplexMaterial {
 	public final Block stone;
 	
-	public final Block polished;
+	/*public final Block polished;
 	public final Block tiles;
 	public final Block pillar;
 	public final Block stairs;
@@ -44,7 +34,7 @@ public class StoneMaterial extends ComplexMaterial {
 	public final Block bricks;
 	public final Block brick_stairs;
 	public final Block brick_slab;
-	public final Block brick_wall;
+	public final Block brick_wall;*/
 	
 	public final String name;
 	
@@ -55,7 +45,7 @@ public class StoneMaterial extends ComplexMaterial {
 		FabricBlockSettings material = FabricBlockSettings.copyOf(Blocks.STONE).materialColor(MaterialColor.GRAY);
 		
 		stone = InnerRegistry.registerBlockAndItem(regName, new BaseBlock(material), CreativeTabs.BLOCKS);
-		polished = InnerRegistry.registerBlockAndItem(regName + "_polished", new BaseBlock(material), CreativeTabs.BLOCKS);
+		/*polished = InnerRegistry.registerBlockAndItem(regName + "_polished", new BaseBlock(material), CreativeTabs.BLOCKS);
 		tiles = InnerRegistry.registerBlockAndItem(regName + "_tiles", new BaseBlock(material), CreativeTabs.BLOCKS);
 		pillar = InnerRegistry.registerBlockAndItem(regName + "_pillar", new BasePillarBlock(material), CreativeTabs.BLOCKS);
 		stairs = InnerRegistry.registerBlockAndItem(regName + "_stairs", new BaseStairsBlock(stone), CreativeTabs.BLOCKS);
@@ -67,10 +57,10 @@ public class StoneMaterial extends ComplexMaterial {
 		bricks = InnerRegistry.registerBlockAndItem(regName + "_bricks", new BaseBlock(material), CreativeTabs.BLOCKS);
 		brick_stairs = InnerRegistry.registerBlockAndItem(regName + "_bricks_stairs", new BaseStairsBlock(bricks), CreativeTabs.BLOCKS);
 		brick_slab = InnerRegistry.registerBlockAndItem(regName + "_bricks_slab", new BaseSlabBlock(bricks), CreativeTabs.BLOCKS);
-		brick_wall = InnerRegistry.registerBlockAndItem(regName + "_bricks_wall", new BaseWallBlock(bricks), CreativeTabs.BLOCKS);
+		brick_wall = InnerRegistry.registerBlockAndItem(regName + "_bricks_wall", new BaseWallBlock(bricks), CreativeTabs.BLOCKS);*/
 		
 		// Recipes //
-		GridRecipe.make(regName + "_bricks", bricks).setOutputCount(4).setShape("##", "##").addMaterial('#', stone).setGroup("end_bricks").build();
+		/*GridRecipe.make(regName + "_bricks", bricks).setOutputCount(4).setShape("##", "##").addMaterial('#', stone).setGroup("end_bricks").build();
 		GridRecipe.make(regName + "_polished", polished).setOutputCount(4).setShape("##", "##").addMaterial('#', bricks).setGroup("end_tile").build();
 		GridRecipe.make(regName + "_tiles", tiles).setOutputCount(4).setShape("##", "##").addMaterial('#', polished).setGroup("end_small_tile").build();
 		GridRecipe.make(regName + "_pillar", pillar).setShape("#", "#").addMaterial('#', slab).setGroup("end_pillar").build();
@@ -96,46 +86,27 @@ public class StoneMaterial extends ComplexMaterial {
 		TagHelper.addTag(BlockTags.STONE_BRICKS, bricks);
 		TagHelper.addTag(BlockTags.WALLS, wall, brick_wall);
 		TagHelper.addTag(BlockTags.SLABS, slab, brick_slab);
-		TagHelper.addTags(pressure_plate, BlockTags.PRESSURE_PLATES, BlockTags.STONE_PRESSURE_PLATES);
+		TagHelper.addTags(pressure_plate, BlockTags.PRESSURE_PLATES, BlockTags.STONE_PRESSURE_PLATES);*/
 	}
 	
 	@Override
 	public void initClient(Random random) {
-		NativeImage cobblTex = TextureHelper.loadImage("minecraft", "textures/block/cobblestone.png");
-		
-		/*float r = random.nextFloat() * 0.5F + 0.25F;
-		float g = random.nextFloat() * 0.5F + 0.25F;
-		float b = random.nextFloat() * 0.5F + 0.25F;
-		CustomColor color = new CustomColor(r, g, b);
-		
-		ColorGradient gradient = TextureHelper.makeSoftPalette(color);
-		BufferTexture texture = TextureHelper.makeNoiseTexture(random);
-		BufferTexture noise = TextureHelper.makeNoiseTexture(random, 1F);
-		TextureHelper.blend(texture, noise, 0.3F);
-		TextureHelper.clamp(texture, 5);
-		TextureHelper.applyGradient(texture, gradient);*/
-		
 		String textureBaseName = name.toLowerCase();
 		String mainName = ProceduralMC.MOD_ID + "." + textureBaseName;
 		
-		BufferTexture texture = ProceduralTextures.makeStoneTexture(random);
+		CustomColor mainColor = new CustomColor(random.nextFloat(), random.nextFloat(), random.nextFloat());
+		ColorGradient palette = ProceduralTextures.makeStonePalette(mainColor, random);
+		BufferTexture texture = ProceduralTextures.makeStoneTexture(palette, random);
 		Identifier stoneTextureID = TextureHelper.makeBlockTextureID(textureBaseName);
 		InnerRegistry.registerTexture(stoneTextureID, texture);
 		
-		texture = new BufferTexture(16, 16);
-		for (int x = 0; x < 16; x++) {
-			for (int y = 0; y < 16; y++) {
-				CustomColor color = TextureHelper.getFromTexture(cobblTex, x, y);
-				texture.setPixel(x, y, color);
-			}
-		}
 		Identifier pillarTopTexID = TextureHelper.makeBlockTextureID(textureBaseName + "_pillar_top");
 		InnerRegistry.registerTexture(pillarTopTexID, texture);
 		
-		ModelHelper.registerSimpleBlockModel(stone, stoneTextureID);
+		ModelHelper.registerRotatedBlockModel(stone, stoneTextureID);
 		NameGenerator.addTranslation("block." + mainName, name);
 		
-		ModelHelper.registerSimpleBlockModel(polished, stoneTextureID);
+		/*ModelHelper.registerSimpleBlockModel(polished, stoneTextureID);
 		NameGenerator.addTranslation("block." + mainName + "_polished", name);
 		
 		ModelHelper.registerSimpleBlockModel(bricks, stoneTextureID);
@@ -145,6 +116,6 @@ public class StoneMaterial extends ComplexMaterial {
 		NameGenerator.addTranslation("block." + mainName + "_tiles", name);
 		
 		ModelHelper.registerPillarBlock(pillar, pillarTopTexID, stoneTextureID);
-		NameGenerator.addTranslation("block." + mainName + "_pillar", name);
+		NameGenerator.addTranslation("block." + mainName + "_pillar", name);*/
 	}
 }

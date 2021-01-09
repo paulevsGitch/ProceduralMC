@@ -66,7 +66,7 @@ public class ProceduralMC implements ModInitializer {
 				RANDOM.setSeed(seed);
 				List<ComplexMaterial> materials = Lists.newArrayList();
 				
-				for (int i = 0; i < 8; i++) {
+				for (int i = 0; i < 16; i++) {
 					StoneMaterial material = new StoneMaterial(RANDOM);
 					materials.add(material);
 				}
