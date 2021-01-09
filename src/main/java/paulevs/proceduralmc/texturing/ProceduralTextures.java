@@ -2,6 +2,7 @@ package paulevs.proceduralmc.texturing;
 
 import java.util.Random;
 
+import net.minecraft.util.math.MathHelper;
 import paulevs.proceduralmc.utils.MHelper;
 import paulevs.proceduralmc.utils.TextureHelper;
 
@@ -14,6 +15,16 @@ public class ProceduralTextures {
 		sat = random.nextFloat() * 0.3F;
 		val = MHelper.randRange(0.3F, 0.5F, random);
 		return TextureHelper.makeDistortedPalette(color, hue, sat, val);
+	}
+	
+	public static ColorGradient makeMetalPalette(Random random) {
+		CustomColor color = new CustomColor(true)
+				.setHue(random.nextFloat())
+				.setSaturation(MHelper.randRange(0.3F, 1F, random))
+				.setBrightness(MHelper.randRange(0.3F, 0.85F, random));
+		float hue = MathHelper.cos(color.getHue() * MHelper.PI2) * 0.1F;
+		float sat = MathHelper.cos(color.getHue() * MHelper.PI2) * 0.15F;
+		return TextureHelper.makeDistortedPalette(color, hue, sat, 0.5F);
 	}
 	
 	public static BufferTexture makeStoneTexture(ColorGradient gradient, Random random) {
@@ -36,8 +47,11 @@ public class ProceduralTextures {
 		result = TextureHelper.blend(result, offseted1, 0.2F);
 		result = TextureHelper.blend(result, offseted2, 0.2F);
 		
-		result = TextureHelper.applyGradient(result, gradient);
 		result = TextureHelper.downScale(result, 4);
+		result = TextureHelper.normalize(result, 0.15F, 0.85F);
+		result = TextureHelper.clamp(result, 8);
+		
+		result = TextureHelper.applyGradient(result, gradient);
 		
 		return result;
 	}
@@ -58,5 +72,9 @@ public class ProceduralTextures {
 	public static BufferTexture coverWithOverlay(BufferTexture texture, BufferTexture overlay, ColorGradient gradient) {
 		BufferTexture over = TextureHelper.applyGradient(overlay.clone(), gradient);
 		return TextureHelper.blend(texture, over, 0.5F);
+	}
+	
+	public static BufferTexture randomColored(BufferTexture[] textures, ColorGradient gradient, Random random) {
+		return TextureHelper.applyGradient(textures[random.nextInt(textures.length)].clone(), gradient);
 	}
 }

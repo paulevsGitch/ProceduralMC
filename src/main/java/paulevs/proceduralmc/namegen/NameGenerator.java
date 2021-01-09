@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -26,11 +27,25 @@ public class NameGenerator {
 	private static String makeName(MarkovChain chain, Random random, int min, int max) {
 		String result = chain.makeWord(min, max, random);
 		result = result.isEmpty() ? Long.toHexString(random.nextLong()).toLowerCase() : result;
-		for (int i = 0; i < 100 && GENERATED.contains(result); i++) {
+		for (int i = 0; i < 300 && GENERATED.contains(result); i++) {
 			result = chain.makeWord(min, max, random);
 			result = result.isEmpty() ? Long.toHexString(random.nextLong()).toLowerCase() : result;
 		}
 		result = GENERATED.contains(result) ? result + "_" + Integer.toHexString(random.nextInt()) : result;
+		GENERATED.add(result);
+		return result;
+	}
+	
+	private static String makeName(MarkovChain chain, Random random, int min, int max, Supplier<String> failFunction) {
+		String result = chain.makeWord(min, max, random);
+		result = result.isEmpty() ? Long.toHexString(random.nextLong()).toLowerCase() : result;
+		for (int i = 0; i < 300 && GENERATED.contains(result); i++) {
+			result = chain.makeWord(min, max, random);
+			result = result.isEmpty() ? Long.toHexString(random.nextLong()).toLowerCase() : result;
+		}
+		if (GENERATED.contains(result)) {
+			result = failFunction.get();
+		}
 		GENERATED.add(result);
 		return result;
 	}
@@ -40,7 +55,7 @@ public class NameGenerator {
 	}
 	
 	public static String makeOreName(Random random) {
-		return makeName(ORE_GEN, random, 6, 12);
+		return makeName(ORE_GEN, random, 6, 12, () -> { return makeRockName(random); });
 	}
 	
 	public static String makeRockName(Random random) {
@@ -57,5 +72,17 @@ public class NameGenerator {
 	
 	public static String getTranslation(String raw) {
 		return NAMES.get(raw);
+	}
+	
+	public static String makeRaw(String type, String name) {
+		return type + "." + ProceduralMC.MOD_ID + "." + name;
+	}
+	
+	public static String makeRawItem(String name) {
+		return makeRaw("item", name);
+	}
+	
+	public static String makeRawBlock(String name) {
+		return makeRaw("block", name);
 	}
 }

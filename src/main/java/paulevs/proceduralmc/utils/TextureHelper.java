@@ -268,6 +268,33 @@ public class TextureHelper {
 		return result;
 	}
 	
+	public static BufferTexture outline(BufferTexture texture, CustomColor dark, CustomColor bright, int offsetX, int offsetY) {
+		BufferTexture result = new BufferTexture(texture.getWidth(), texture.getHeight());
+		BufferTexture darkOffset = offset(texture, offsetX, offsetY);
+		BufferTexture lightOffset = offset(texture, -offsetX, -offsetY);
+		COLOR.forceRGB();
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(lightOffset.getPixel(x, y));
+				if (COLOR.getAlpha() > 0) {
+					COLOR.set(texture.getPixel(x, y));
+					if (COLOR.getAlpha() == 0) {
+						result.setPixel(x, y, bright);
+						continue;
+					}
+				}
+				COLOR.set(darkOffset.getPixel(x, y));
+				if (COLOR.getAlpha() > 0) {
+					COLOR.set(texture.getPixel(x, y));
+					if (COLOR.getAlpha() == 0) {
+						result.setPixel(x, y, dark);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
 	public static BufferTexture clamp(BufferTexture texture, int levels) {
 		COLOR.forceRGB();
 		for (int x = 0; x < texture.getWidth(); x++) {
@@ -367,6 +394,41 @@ public class TextureHelper {
 				COLOR.setRed((COLOR.getRed() - minR) / normR);
 				COLOR.setGreen((COLOR.getGreen() - minG) / normG);
 				COLOR.setBlue((COLOR.getBlue() - minB) / normB);
+				texture.setPixel(x, y, COLOR);
+			}
+		}
+		return texture;
+	}
+	
+	public static BufferTexture normalize(BufferTexture texture, float min, float max) {
+		float delta = max - min;
+		float minR = 1;
+		float minG = 1;
+		float minB = 1;
+		float normR = 0;
+		float normG = 0;
+		float normB = 0;
+		COLOR.forceRGB();
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(texture.getPixel(x, y));
+				normR = MHelper.max(normR, COLOR.getRed());
+				normG = MHelper.max(normG, COLOR.getGreen());
+				normB = MHelper.max(normB, COLOR.getBlue());
+				minR = MHelper.min(minR, COLOR.getRed());
+				minG = MHelper.min(minG, COLOR.getGreen());
+				minB = MHelper.min(minB, COLOR.getBlue());
+			}
+		}
+		normR = (normR == 0 ? 1 : normR) - minR;
+		normG = (normG == 0 ? 1 : normG) - minG;
+		normB = (normB == 0 ? 1 : normB) - minB;
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(texture.getPixel(x, y));
+				COLOR.setRed((COLOR.getRed() - minR) / normR * delta + min);
+				COLOR.setGreen((COLOR.getGreen() - minG) / normG * delta + min);
+				COLOR.setBlue((COLOR.getBlue() - minB) / normB * delta + min);
 				texture.setPixel(x, y, COLOR);
 			}
 		}
