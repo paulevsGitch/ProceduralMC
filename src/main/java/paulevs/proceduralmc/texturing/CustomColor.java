@@ -280,6 +280,16 @@ public class CustomColor {
 		this.z = MathHelper.clamp(br, 0F, 1F);
 		return this;
 	}
+	
+	public CustomColor forceRGB() {
+		hsvMode = false;
+		return this;
+	}
+	
+	public CustomColor forceHSV() {
+		hsvMode = true;
+		return this;
+	}
 
 	@Override
 	public CustomColor clone() {

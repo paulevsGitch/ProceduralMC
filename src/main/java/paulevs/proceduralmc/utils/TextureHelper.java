@@ -53,7 +53,7 @@ public class TextureHelper {
 	}
 	
 	public static CustomColor getFromTexture(NativeImage img, int x, int y) {
-		return COLOR.set(img.getPixelColor(x, y));
+		return COLOR.forceRGB().set(img.getPixelColor(x, y));
 	}
 	
 	public static CustomColor getFromTexture(BufferTexture img, float x, float y) {
@@ -64,7 +64,7 @@ public class TextureHelper {
 		float deltaX = x - MathHelper.floor(x);
 		float deltaY = y - MathHelper.floor(y);
 		
-		COLOR.set(img.getPixel(x1, y1));
+		COLOR.forceRGB().set(img.getPixel(x1, y1));
 		float r1 = COLOR.getRed();
 		float g1 = COLOR.getGreen();
 		float b1 = COLOR.getBlue();
@@ -141,7 +141,7 @@ public class TextureHelper {
 	public static BufferTexture makeNoiseTexture(Random random) {
 		BufferTexture texture = new BufferTexture(16, 16);
 		OpenSimplexNoise noise = new OpenSimplexNoise(random.nextInt());
-		COLOR.setAlpha(1F);
+		COLOR.forceRGB().setAlpha(1F);
 		float scale = MHelper.randRange(0.4F, 0.7F, random);
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
@@ -172,7 +172,7 @@ public class TextureHelper {
 	public static BufferTexture makeNoiseTexture(Random random, float scale) {
 		BufferTexture texture = new BufferTexture(16, 16);
 		OpenSimplexNoise noise = new OpenSimplexNoise(random.nextInt());
-		COLOR.setAlpha(1F);
+		COLOR.forceRGB().setAlpha(1F);
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				float nx = (float) x / texture.getWidth();
@@ -202,7 +202,7 @@ public class TextureHelper {
 	public static BufferTexture makeNoiseTexture(Random random, int side, float scale) {
 		BufferTexture texture = new BufferTexture(side, side);
 		OpenSimplexNoise noise = new OpenSimplexNoise(random.nextInt());
-		COLOR.setAlpha(1F);
+		COLOR.forceRGB().setAlpha(1F);
 		for (int x = 0; x < side; x++) {
 			for (int y = 0; y < side; y++) {
 				float nx = (float) x / side;
@@ -231,6 +231,8 @@ public class TextureHelper {
 	
 	public static BufferTexture blend(BufferTexture a, BufferTexture b, float mix) {
 		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
+		COLOR.forceRGB();
+		COLOR2.forceRGB();
 		for (int x = 0; x < a.getWidth(); x++) {
 			for (int y = 0; y < a.getHeight(); y++) {
 				COLOR.set(a.getPixel(x, y));
@@ -246,6 +248,8 @@ public class TextureHelper {
 	
 	public static BufferTexture cover(BufferTexture a, BufferTexture b) {
 		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
+		COLOR.forceRGB();
+		COLOR2.forceRGB();
 		for (int x = 0; x < a.getWidth(); x++) {
 			for (int y = 0; y < a.getHeight(); y++) {
 				int pixelA = a.getPixel(x, y);
@@ -265,6 +269,7 @@ public class TextureHelper {
 	}
 	
 	public static BufferTexture clamp(BufferTexture texture, int levels) {
+		COLOR.forceRGB();
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(texture.getPixel(x, y));
@@ -279,6 +284,7 @@ public class TextureHelper {
 	}
 	
 	public static BufferTexture applyGradient(BufferTexture texture, ColorGradient gradient) {
+		COLOR.forceRGB();
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(texture.getPixel(x, y));
@@ -292,6 +298,7 @@ public class TextureHelper {
 		BufferTexture result = new BufferTexture(texture.getWidth(), texture.getHeight());
 		Vector3f dirX = new Vector3f();
 		Vector3f dirY = new Vector3f();
+		COLOR.forceRGB();
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(distortion.getPixel(x, y));
@@ -317,6 +324,8 @@ public class TextureHelper {
 	
 	public static BufferTexture hightPass(BufferTexture texture, int offsetX, int offsetY) {
 		BufferTexture result = new BufferTexture(texture.getWidth(), texture.getHeight());
+		COLOR.forceRGB();
+		COLOR2.forceRGB();
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(texture.getPixel(x, y));
@@ -337,6 +346,7 @@ public class TextureHelper {
 		float normR = 0;
 		float normG = 0;
 		float normB = 0;
+		COLOR.forceRGB();
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(texture.getPixel(x, y));
@@ -365,6 +375,8 @@ public class TextureHelper {
 	
 	public static BufferTexture add(BufferTexture a, BufferTexture b) {
 		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
+		COLOR.forceRGB();
+		COLOR2.forceRGB();
 		for (int x = 0; x < a.getWidth(); x++) {
 			for (int y = 0; y < a.getHeight(); y++) {
 				COLOR.set(a.getPixel(x, y));
@@ -380,6 +392,8 @@ public class TextureHelper {
 	
 	public static BufferTexture sub(BufferTexture a, BufferTexture b) {
 		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
+		COLOR.forceRGB();
+		COLOR2.forceRGB();
 		for (int x = 0; x < a.getWidth(); x++) {
 			for (int y = 0; y < a.getHeight(); y++) {
 				COLOR.set(a.getPixel(x, y));
@@ -395,6 +409,7 @@ public class TextureHelper {
 	
 	public static BufferTexture offset(BufferTexture texture, int offsetX, int offsetY) {
 		BufferTexture result = new BufferTexture(texture.getWidth(), texture.getHeight());
+		COLOR.forceRGB();
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(texture.getPixel(MHelper.wrap(x + offsetX, texture.getWidth()), MHelper.wrap(y + offsetY, texture.getHeight())));
@@ -405,6 +420,7 @@ public class TextureHelper {
 	}
 	
 	public static BufferTexture invert(BufferTexture texture) {
+		COLOR.forceRGB();
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(texture.getPixel(x, y));
@@ -468,6 +484,7 @@ public class TextureHelper {
 		float cg = 0;
 		float cb = 0;
 		
+		COLOR.forceRGB();
 		for (int px = -r; px <= r; px ++) {
 			int posX = MHelper.wrap(x + px, texture.getWidth());
 			for (int py = -r; py <= r; py ++) {
@@ -489,6 +506,7 @@ public class TextureHelper {
 		float cg = 0;
 		float cb = 0;
 		
+		COLOR.forceRGB();
 		for (int px = 0; px < width; px ++) {
 			int posX = MHelper.wrap(x + px, texture.getWidth());
 			for (int py = 0; py < height; py ++) {
@@ -507,6 +525,7 @@ public class TextureHelper {
 	public static float fakeDispersion(BufferTexture texture) {
 		int count = 0;
 		float disp = 0;
+		COLOR.forceRGB();
 		for (int x = 1; x < texture.getWidth(); x += 2) {
 			for (int y = 1; y < texture.getHeight(); y += 2) {
 				COLOR.set(texture.getPixel(x, y));
