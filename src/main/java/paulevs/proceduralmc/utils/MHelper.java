@@ -10,6 +10,10 @@ public class MHelper {
 	public static float wrap(float x, float y) {
 	    return x - MathHelper.floor(x / y) * y;
 	}
+	
+	public static int wrap(int x, int y) {
+	    return x < 0 ? (x - MathHelper.floor(x / y) + y) % y : x % y;
+	}
 
 	public static float lengthSqr(float x, float y, float z) {
 		return x * x + y * y + z * z;
@@ -21,5 +25,13 @@ public class MHelper {
 	
 	public static float linearToAngle(float x) {
 		return x * PI2;
+	}
+	
+	public static float max(float a, float b) {
+		return a > b ? a : b;
+	}
+
+	public static float min(float a, float b) {
+		return a < b ? a : b;
 	}
 }

@@ -236,7 +236,7 @@ public class TextureHelper {
 		return texture;
 	}
 	
-	public static BufferTexture applyGragient(BufferTexture texture, ColorGradient gradient) {
+	public static BufferTexture applyGradient(BufferTexture texture, ColorGradient gradient) {
 		for (int x = 0; x < texture.getWidth(); x++) {
 			for (int y = 0; y < texture.getHeight(); y++) {
 				COLOR.set(texture.getPixel(x, y));
@@ -271,6 +271,97 @@ public class TextureHelper {
 			}
 		}
 		return result;
+	}
+	
+	public static BufferTexture hightPass(BufferTexture texture, int offsetX, int offsetY) {
+		BufferTexture result = new BufferTexture(texture.getWidth(), texture.getHeight());
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(texture.getPixel(x, y));
+				COLOR2.set(texture.getPixel(MHelper.wrap(x + offsetX, texture.getWidth()), MHelper.wrap(y + offsetY, texture.getHeight())));
+				float r = MathHelper.abs(COLOR.getRed() - COLOR2.getRed());
+				float g = MathHelper.abs(COLOR.getGreen() - COLOR2.getGreen());
+				float b = MathHelper.abs(COLOR.getBlue() - COLOR2.getBlue());
+				result.setPixel(x, y, COLOR.set(r, g, b));
+			}
+		}
+		return result;
+	}
+	
+	public static BufferTexture normalize(BufferTexture texture) {
+		float minR = 1;
+		float minG = 1;
+		float minB = 1;
+		float normR = 0;
+		float normG = 0;
+		float normB = 0;
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(texture.getPixel(x, y));
+				normR = MHelper.max(normR, COLOR.getRed());
+				normG = MHelper.max(normG, COLOR.getGreen());
+				normB = MHelper.max(normB, COLOR.getBlue());
+				minR = MHelper.min(minR, COLOR.getRed());
+				minG = MHelper.min(minG, COLOR.getGreen());
+				minB = MHelper.min(minB, COLOR.getBlue());
+			}
+		}
+		normR = (normR == 0 ? 1 : normR) - minR;
+		normG = (normG == 0 ? 1 : normG) - minG;
+		normB = (normB == 0 ? 1 : normB) - minB;
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(texture.getPixel(x, y));
+				COLOR.setRed((COLOR.getRed() - minR) / normR);
+				COLOR.setGreen((COLOR.getGreen() - minG) / normG);
+				COLOR.setBlue((COLOR.getBlue() - minB) / normB);
+				texture.setPixel(x, y, COLOR);
+			}
+		}
+		return texture;
+	}
+	
+	public static BufferTexture add(BufferTexture a, BufferTexture b) {
+		BufferTexture result = new BufferTexture(a.getWidth(), a.getHeight());
+		for (int x = 0; x < a.getWidth(); x++) {
+			for (int y = 0; y < a.getHeight(); y++) {
+				COLOR.set(a.getPixel(x, y));
+				COLOR2.set(b.getPixel(x, y));
+				float cr = COLOR.getRed() + COLOR2.getRed();
+				float cg = COLOR.getGreen() + COLOR2.getGreen();
+				float cb = COLOR.getBlue() + COLOR2.getBlue();
+				result.setPixel(x, y, COLOR.set(cr, cg, cb));
+			}
+		}
+		return result;
+	}
+	
+	public static BufferTexture offset(BufferTexture texture, int offsetX, int offsetY) {
+		BufferTexture result = new BufferTexture(texture.getWidth(), texture.getHeight());
+		for (int x = 0; x < texture.getWidth(); x++) {
+			for (int y = 0; y < texture.getHeight(); y++) {
+				COLOR.set(texture.getPixel(MHelper.wrap(x + offsetX, texture.getWidth()), MHelper.wrap(y + offsetY, texture.getHeight())));
+				result.setPixel(x, y, COLOR);
+			}
+		}
+		return result;
+	}
+	
+	public static ColorGradient makeDistortedPalette(CustomColor color, float hueDist, float satDist, float valDist) {
+		CustomColor colorStart = new CustomColor().set(color).switchToHSV();
+		
+		colorStart
+		.setHue(colorStart.getHue() - hueDist)
+		.setSaturation(colorStart.getSaturation() - satDist)
+		.setBrightness(colorStart.getBrightness() - valDist);
+		
+		CustomColor colorEnd = new CustomColor().set(color).switchToHSV();
+		colorEnd
+		.setHue(colorEnd.getHue() + hueDist)
+		.setSaturation(colorEnd.getSaturation() + satDist)
+		.setBrightness(colorEnd.getBrightness() + valDist);
+		
+		return new ColorGradient(colorStart, colorEnd);
 	}
 
 	public static ColorGradient makeSoftPalette(CustomColor color) {

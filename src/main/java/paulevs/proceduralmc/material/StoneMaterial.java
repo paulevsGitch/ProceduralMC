@@ -23,8 +23,8 @@ import paulevs.proceduralmc.block.BaseWallBlock;
 import paulevs.proceduralmc.namegen.NameGenerator;
 import paulevs.proceduralmc.recipe.GridRecipe;
 import paulevs.proceduralmc.texturing.BufferTexture;
-import paulevs.proceduralmc.texturing.ColorGradient;
 import paulevs.proceduralmc.texturing.CustomColor;
+import paulevs.proceduralmc.texturing.ProceduralTextures;
 import paulevs.proceduralmc.utils.ModelHelper;
 import paulevs.proceduralmc.utils.TagHelper;
 import paulevs.proceduralmc.utils.TextureHelper;
@@ -103,7 +103,7 @@ public class StoneMaterial extends ComplexMaterial {
 	public void initClient(Random random) {
 		NativeImage cobblTex = TextureHelper.loadImage("minecraft", "textures/block/cobblestone.png");
 		
-		float r = random.nextFloat() * 0.5F + 0.25F;
+		/*float r = random.nextFloat() * 0.5F + 0.25F;
 		float g = random.nextFloat() * 0.5F + 0.25F;
 		float b = random.nextFloat() * 0.5F + 0.25F;
 		CustomColor color = new CustomColor(r, g, b);
@@ -113,17 +113,19 @@ public class StoneMaterial extends ComplexMaterial {
 		BufferTexture noise = TextureHelper.makeNoiseTexture(random, 1F);
 		TextureHelper.blend(texture, noise, 0.3F);
 		TextureHelper.clamp(texture, 5);
-		TextureHelper.applyGragient(texture, gradient);
+		TextureHelper.applyGradient(texture, gradient);*/
 		
 		String textureBaseName = name.toLowerCase();
 		String mainName = ProceduralMC.MOD_ID + "." + textureBaseName;
+		
+		BufferTexture texture = ProceduralTextures.makeStoneTexture(random);
 		Identifier stoneTextureID = TextureHelper.makeBlockTextureID(textureBaseName);
 		InnerRegistry.registerTexture(stoneTextureID, texture);
 		
 		texture = new BufferTexture(16, 16);
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
-				color = TextureHelper.getFromTexture(cobblTex, x, y);
+				CustomColor color = TextureHelper.getFromTexture(cobblTex, x, y);
 				texture.setPixel(x, y, color);
 			}
 		}
