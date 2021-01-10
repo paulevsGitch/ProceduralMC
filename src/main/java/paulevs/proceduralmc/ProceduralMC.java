@@ -12,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import paulevs.proceduralmc.material.ComplexMaterial;
+import paulevs.proceduralmc.material.GemOreMaterial;
 import paulevs.proceduralmc.material.MetalOreMaterial;
 import paulevs.proceduralmc.material.OreMaterial;
 import paulevs.proceduralmc.material.StoneMaterial;
@@ -68,6 +69,11 @@ public class ProceduralMC implements ModInitializer {
 				
 				for (int i = 0; i < 32; i++) {
 					OreMaterial material = new MetalOreMaterial(RANDOM);
+					materials.add(material);
+				}
+				
+				for (int i = 0; i < 32; i++) {
+					OreMaterial material = new GemOreMaterial(RANDOM);
 					materials.add(material);
 				}
 				
